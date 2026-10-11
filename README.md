@@ -1,6 +1,6 @@
 # Dashcam Battery Bluetooth Protocols
 
-An open Bluetooth protocol reference for the BlackVue B-124, B-130A and B-130X, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, and Cellink Neo. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. UUIDs, connection sequences, commands, packet layouts, units and firmware differences are documented independently of any particular app.
+An open Bluetooth protocol reference for the BlackVue B-124, B-130A and B-130X, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, and Cellink Neo, plus a hardware-observed discovery reference for Thinkware iVolt XTRA / BAB-95. Seven models have telemetry references; iVolt XTRA does not yet have a verified decoder. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. UUIDs, connection sequences, commands, packet layouts, units and firmware differences are documented independently of any particular app.
 
 ## Battery coverage
 
@@ -13,6 +13,7 @@ An open Bluetooth protocol reference for the BlackVue B-124, B-130A and B-130X, 
 | BlackboxMyCar PowerCell 8 | Hardware-observed telemetry, F141 | `@@`, little-endian, `FF12` status transport | [PowerCell 8](docs/powercell8.md) |
 | VIOFO BP100 | Hardware-observed telemetry, V39 | `AA 55 AA 55`, command-specific decimal fields | [BP100](docs/bp100.md) |
 | Cellink Neo | Hardware-observed telemetry, 1.52 | `43 06`, classic big-endian layout | [Cellink Neo](docs/cellink-neo6.md) |
+| Thinkware iVolt XTRA / BAB-95 | Hardware-observed GATT discovery only; firmware unverified | `FF12` and `FFF0` metadata; proprietary framing/decoder unknown | [iVolt XTRA](docs/ivolt-xtra.md) |
 
 Coverage reviewed October 11, 2026. A related name, UUID or shared manufacturer does not establish protocol compatibility. B-124X and Cellink Neo+ family references have separate evidence limits.
 
@@ -25,7 +26,7 @@ Coverage reviewed October 11, 2026. A related name, UUID or shared manufacturer 
 - [Sources and attribution](docs/sources.md)
 - [Contributing](CONTRIBUTING.md)
 
-The seven machine-readable coverage profiles live in [profiles/](profiles/). [Synthetic packet fixtures](examples/vectors.json) demonstrate offsets and units; [exchange sequences](examples/exchanges.json) and the [annotated conversation guide](examples/communication.md) show how to subscribe, identify and query each battery in charging/discharging states. Examples contain no private captures. PC8 charging state remains source-derived, not hardware-verified on F141. Legacy/ITSC trailers and BP100 CRC fields are **unverified zero placeholders**; Neo+ family replies end in `0A 0D` (LF then CR) and use zeroed PIN/reserved fields. Do not transmit response fixtures to a battery.
+The eight machine-readable coverage profiles live in [profiles/](profiles/): seven telemetry profiles and one discovery-only iVolt XTRA profile. [Synthetic packet fixtures](examples/vectors.json) demonstrate offsets and units; [exchange sequences](examples/exchanges.json) and the [annotated conversation guide](examples/communication.md) show how to subscribe, identify and query the seven telemetry-profile batteries in charging/discharging states. iVolt XTRA has no verified request/response examples yet. Examples contain no private captures. PC8 charging state remains source-derived, not hardware-verified on F141. Legacy/ITSC trailers and BP100 CRC fields are **unverified zero placeholders**; Neo+ family replies end in `0A 0D` (LF then CR) and use zeroed PIN/reserved fields. Do not transmit response fixtures to a battery.
 
 ## Interpreting fields
 

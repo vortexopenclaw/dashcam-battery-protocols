@@ -1,0 +1,18 @@
+{
+  "id": "ivolt-xtra",
+  "manufacturer": "Thinkware",
+  "model": "iVolt XTRA / BAB-95",
+  "coverage": "gatt_discovery_only",
+  "protocol": null,
+  "tested_firmware": [],
+  "source_only_variants": [],
+  "service_uuids": [
+    "0000ff12-0000-1000-8000-00805f9b34fb",
+    "0000fff0-0000-1000-8000-00805f9b34fb"
+  ],
+  "reference": "docs/ivolt-xtra.md",
+  "reviewed": "2026-10-11",
+  "evidence_page": "docs/methodology.md",
+  "incoming_checksum": "unverified",
+  "capacity_semantics": "unknown_not_decoded"
+}
