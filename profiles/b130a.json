@@ -12,8 +12,9 @@
     "0000fff0-0000-1000-8000-00805f9b34fb"
   ],
   "reference": "docs/b130a.md",
-  "reviewed": "2026-10-10",
+  "reviewed": "2026-10-11",
   "evidence_page": "docs/methodology.md",
   "incoming_checksum": "unverified",
-  "capacity_semantics": "configured_mah"
+  "capacity_semantics": "configured_mah",
+  "charging_output_current": "zero_does_not_establish_absence_of_load"
 }

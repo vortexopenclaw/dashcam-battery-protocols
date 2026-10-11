@@ -12,8 +12,9 @@
     "49535343-fe7d-4ae5-8fa9-9fafd205e455"
   ],
   "reference": "docs/bi750.md",
-  "reviewed": "2026-10-10",
+  "reviewed": "2026-10-11",
   "evidence_page": "docs/methodology.md",
   "incoming_checksum": "unverified",
-  "capacity_semantics": "configured_mah"
+  "capacity_semantics": "configured_mah",
+  "charging_output_current": "zero_does_not_establish_absence_of_load"
 }
