@@ -203,6 +203,21 @@
       }
     },
     {
+      "id": "b130x_no_load",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "firmware_revision": 161,
+      "model": "B-130X",
+      "hex": "43 06 18 51 96 00 00 00 00 7D 88 00 00 00 00 00 00 00 1D 4C 00 00 00 00 00 00 82 00 00",
+      "expected": {
+        "charge_percent": 50, "temperature_c": 25,
+        "input_v": 0.0, "input_a": 0.0,
+        "output_v": 13.0, "output_a": 0.0,
+        "runtime_estimate_min": 0, "time_to_full_min": 0,
+        "reported_capacity_mah": 7500, "state_code": 0
+      }
+    },
+    {
       "id": "bi750_vitals",
       "protocol": "itsc",
       "kind": "vitals",
