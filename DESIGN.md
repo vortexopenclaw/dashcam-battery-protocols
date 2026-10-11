@@ -1,6 +1,6 @@
 # Reference design
 
-Objective: maintain public, app-independent BLE protocol documentation for six battery models, following the evidence-first approach of Dashcam Camera Profiles. Original Neo6, PC8 F141 and BP100 V39 now have their own scoped hardware evidence; preserve wider-model/firmware unknowns.
+Objective: maintain public, app-independent BLE protocol documentation for six battery models, following the evidence-first approach of Dashcam Camera Profiles. Cellink Neo, PC8 F141 and BP100 V39 now have their own scoped hardware evidence; preserve wider-model/firmware unknowns.
 
 Success checks: exact tested-model/firmware scope; transport, framing, lengths, field units and unknowns documented; private raw data excluded; synthetic vectors agree with the working parser; local links/privacy checks pass; public GitHub files and CI match the reviewed commit.
 

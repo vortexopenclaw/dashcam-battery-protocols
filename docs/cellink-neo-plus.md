@@ -6,7 +6,7 @@ This family uses service `FF12`, writer `FF01` and notification characteristic `
 
 The standard status is 75 bytes. Its payload includes settings and a PIN-bearing region at complete-frame offsets 59–60. Unknown response types can contain different private fields, so zeroing those two bytes is not a universal sanitizer. See the [pinned upstream protocol document](https://github.com/RobXYZ/cellink2mqtt/blob/d97ab241aa92d22a00482ecdcddf28e491ad13b5/PROTOCOL.md) for provenance.
 
-The older original-Neo family uses different framing. Keep `@@` and `43 06` decoders separate. [Original Neo 6 firmware 1.52](cellink-neo6.md) has its own profile.
+The older original-Neo family uses different framing. Keep `@@` and `43 06` decoders separate. [Cellink Neo firmware 1.52](cellink-neo6.md) has its own profile.
 
 ## Additional status fields
 
@@ -46,7 +46,7 @@ Full extended response length and other fields require further specification. Do
 
 ## Configuration protocol
 
-These writes are source-derived, not hardware-verified on PC8 or original Neo 6. Status bytes 65–66 hold the little-endian supported-setting mask, 67–68 the locked-setting mask. Only supported and unlocked settings are eligible. Authentication packet: `40 40 43 3D 02 PP PP 0A 0D`, where `PP PP` is the private two-byte **big-endian** settings password. The reported reply prefix is `40 40 43 3D 02 4F 4B` (`OK`); the full acknowledgement frame remains unspecified.
+These writes are source-derived, not hardware-verified on PC8 or the original Cellink Neo. Status bytes 65–66 hold the little-endian supported-setting mask, 67–68 the locked-setting mask. Only supported and unlocked settings are eligible. Authentication packet: `40 40 43 3D 02 PP PP 0A 0D`, where `PP PP` is the private two-byte **big-endian** settings password. The reported reply prefix is `40 40 43 3D 02 4F 4B` (`OK`); the full acknowledgement frame remains unspecified.
 
 Write packet: `40 40 43 ID NN [value] 0A 0D`; NN is value length, multibyte write values are **big-endian**, unlike status measurements.
 

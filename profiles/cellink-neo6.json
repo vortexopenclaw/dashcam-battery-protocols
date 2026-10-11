@@ -1,7 +1,8 @@
 {
   "id": "cellink-neo6",
   "manufacturer": "Cellink",
-  "model": "Neo 6",
+  "model": "Neo",
+  "reported_model": "Neo 6",
   "coverage": "hardware_telemetry",
   "protocol": "blackvue_legacy",
   "tested_firmware": ["1.52"],

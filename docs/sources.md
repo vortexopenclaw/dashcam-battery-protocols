@@ -28,9 +28,9 @@ Targeted offline analysis of the battery activity, Bluetooth connection manager 
 
 The upstream hardware validation is Neo 8+; its manufacturer-app model list provides a PowerCell 8 research lead. No upstream setting implementation is copied into this reference.
 
-## Original Cellink Neo6
+## Cellink Neo
 
-Original-Neo context comes from the pinned [cellink2mqtt protocol notes](https://github.com/RobXYZ/cellink2mqtt/blob/d97ab241aa92d22a00482ecdcddf28e491ad13b5/PROTOCOL.md), which distinguish the older `kr.co.egens.cellinkbatterybtcontrol` family and `43 06` framing. The shared legacy field map is independently interpreted from the BlackVue implementation above and corroborated by Neo6/1.52 replies. Other Neo variants and Neo-specific settings remain unverified.
+Original-Neo context comes from the pinned [cellink2mqtt protocol notes](https://github.com/RobXYZ/cellink2mqtt/blob/d97ab241aa92d22a00482ecdcddf28e491ad13b5/PROTOCOL.md), which distinguish the older `kr.co.egens.cellinkbatterybtcontrol` family and `43 06` framing. The shared legacy field map is independently interpreted from the BlackVue implementation above and corroborated by Cellink Neo firmware 1.52 replies. Other Neo variants and Neo-specific settings remain unverified.
 
 ## VIOFO BP100
 

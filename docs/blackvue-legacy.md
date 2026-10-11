@@ -1,6 +1,6 @@
 # BlackVue B-124 / B-130A wire protocol
 
-The [original Cellink Neo6](cellink-neo6.md) firmware1.52 also uses this transport and classic map. Its own identity/firmware gate and evidence limits remain separate from BlackVue variants.
+The [Cellink Neo](cellink-neo6.md) firmware 1.52 also uses this transport and classic map. Its own identity/firmware gate and evidence limits remain separate from BlackVue variants.
 
 Evidence: manufacturer-implementation analysis plus hardware observations on B-124 firmware 1.44 and B-130A firmware 1.61. Firmware branches outside those two revisions are source-derived, not hardware-tested here. See [sources](sources.md) and [methodology](methodology.md).
 
@@ -119,4 +119,4 @@ Source-derived from BlackVue Android 3.60; these writes remain unverified on har
 | `64` | One byte, 0 or 1 | Beep disabled/enabled |
 | `6A` | Two-byte unsigned big-endian mAh | Configured battery capacity, B-124/B-124X app path |
 
-The native app waits for a reply carrying the matching command, then queries status `51`. Its B-124/B-124X save flow sends `64` followed by `6A`; other model paths do not automatically send capacity. Preserve model-specific limits. Neo 6 settings compatibility and full acknowledgement payload/persistence behavior remain unspecified.
+The native app waits for a reply carrying the matching command, then queries status `51`. Its B-124/B-124X save flow sends `64` followed by `6A`; other model paths do not automatically send capacity. Preserve model-specific limits. Cellink Neo settings compatibility and full acknowledgement payload/persistence behavior remain unspecified.

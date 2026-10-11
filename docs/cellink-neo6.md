@@ -1,6 +1,6 @@
-# Original Cellink Neo 6
+# Cellink Neo
 
-Verified protocol revision: **Neo 6 firmware 1.52**. This model uses the original `43 06` family; Neo+/PowerCell 8 use `@@`. Advertisement shape `CN6-XXXX`, returned model `Neo 6`, firmware integer 152. Other Neo models/firmware are not established by this map.
+Verified protocol revision: **Cellink Neo firmware 1.52**. This model uses the original `43 06` family; Neo+/PowerCell 8 use `@@`. Advertisement shape `CN6-XXXX`, returned model `Neo 6`, firmware integer 152. `Neo 6` is the Bluetooth identity string, not the product name. Other Neo models/firmware are not established by this map.
 
 ## Transport
 

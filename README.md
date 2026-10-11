@@ -1,6 +1,6 @@
 # Dashcam Battery Bluetooth Protocols
 
-An open Bluetooth protocol reference for building your own dashcam-battery apps and interfaces, including keeping batteries usable after manufacturer app support ends. UUIDs, connection sequences, commands, packet layouts, units and firmware differences are documented independently of any particular app.
+An open Bluetooth protocol reference for the BlackVue B-124 and B-130A, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, and Cellink Neo. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. UUIDs, connection sequences, commands, packet layouts, units and firmware differences are documented independently of any particular app.
 
 ## Battery coverage
 
@@ -11,7 +11,7 @@ An open Bluetooth protocol reference for building your own dashcam-battery apps 
 | BlackboxMyCar BI-750 | Hardware-observed telemetry, firmware 1.6 | `ITSC`, big-endian | [BI-750](docs/bi750.md) |
 | BlackboxMyCar PowerCell 8 | Hardware-observed telemetry, F141 | `@@`, little-endian, `FF12` status transport | [PowerCell 8](docs/powercell8.md) |
 | VIOFO BP100 | Hardware-observed telemetry, V39 | `AA 55 AA 55`, command-specific decimal fields | [BP100](docs/bp100.md) |
-| Original Cellink Neo 6 | Hardware-observed telemetry, 1.52 | `43 06`, classic big-endian layout | [Neo 6](docs/cellink-neo6.md) |
+| Cellink Neo | Hardware-observed telemetry, 1.52 | `43 06`, classic big-endian layout | [Cellink Neo](docs/cellink-neo6.md) |
 
 Coverage reviewed October 10, 2026. A related name, UUID or shared manufacturer does not establish protocol compatibility. B-124X, B-130X and Cellink Neo+ family references have separate evidence limits.
 
