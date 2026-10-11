@@ -20,8 +20,8 @@ Zero-based complete-frame offsets; multibyte integers big-endian. Command `51` r
 | 10 / 11 / 12 | Battery/input/output voltage | Byte/10 V |
 | 14–15 / 16–17 | Input/output current | BE16/1000 A |
 | 18–19 | Configured capacity | BE16 mAh |
-| 20 | State | Low nibble; observed 1 Charging |
+| 20 | State | Low nibble; observed 0 input-off/no-load, 1 Charging, 3 Discharging under load |
 
-Watts are calculated, not reported. Other legacy state mappings are source-derived. Neo-specific capacity/beep/parking-sustained/reset commands are not yet specified; BlackVue settings opcodes must not be assumed compatible from a shared status layout.
+Watts are calculated, not reported. Loaded discharge produces nonzero output current and a runtime estimate at the offsets above; runtime is the battery's estimate, not guaranteed parking coverage. Other legacy state mappings are source-derived. Neo-specific capacity/beep/parking-sustained/reset commands are not yet specified; BlackVue settings opcodes must not be assumed compatible from a shared status layout.
 
 Zero reported runtime with no output load is not an empty-battery indicator. Configured capacity is editable, not measured health. Other firmware and complete protection-state meanings remain unknown. [Synthetic examples](../examples/vectors.json) exercise the layout.
