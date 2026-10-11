@@ -20,6 +20,8 @@ Calculate power as volts × amps and distinguish reported capacity from measured
 
 ## Transport and runtime
 
+Follow the [annotated communication examples](../examples/communication.md) for per-model GATT setup, identity queries and charging/discharging replies. The corresponding [exchange JSON](../examples/exchanges.json) references [packet fixtures](../examples/vectors.json), so examples can drive a client simulator without using private device captures. Charging examples do not upgrade source-derived states to hardware-observed support.
+
 Subscribe before polling; respect actual GATT properties; serialize client operations; verify expected frame length before decoding. Reset stream state on reconnection. A header can occur inside a payload, so consume a complete length-delimited frame rather than splitting on every header occurrence.
 
 On disconnect, discard partial frames and re-identify before resuming commands. A connection timeout before service discovery is not a decoded protocol error. Preserve original advertised names for identity; replacement characters can be removed only from presentation. Battery measurements do not identify the connected dashcam model.

@@ -4,6 +4,7 @@ import json
 import math
 from pathlib import Path
 import re
+from render_examples import render
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -87,8 +88,11 @@ def decode_example(example, packet):
                 'reported_capacity_mah': be16(packet, 18), 'state_code': packet[20] & 15}
     require(example['protocol'] == 'itsc' and packet[:4] == b'ITSC', 'ITSC example header')
     word = packet[6]
-    require(word in (0x33, 0x34, 0x35) and len(packet) == 16, 'ITSC layout')
+    require(word in (0x32, 0x33, 0x34, 0x35) and len(packet) == (17 if word == 0x32 else 16), 'ITSC layout')
     require(packet[4:6] == b'\x00\x00', 'Synthetic device-ID placeholders')
+    if word == 0x32:
+        return {'firmware': f'{packet[7] // 10}.{packet[7] % 10}',
+                'model': packet[11:16].decode('ascii').strip()}
     if word == 0x33:
         return {'charge_percent': packet[7], 'temperature_c': packet[8], 'state_code': packet[9]}
     if word == 0x34:
@@ -153,6 +157,34 @@ def main():
                 if isinstance(expected, (int, float)) else actual == expected
             require(agrees, f'{example["id"]}: expectation mismatch for {field}')
     require(len(ids) == len(set(ids)), 'Unique example IDs required')
+    exchanges = json.loads((ROOT / 'examples/exchanges.json').read_text())
+    require(exchanges['synthetic'] is True, 'Exchange examples must be synthetic')
+    require(len(exchanges['sessions']) == len(models) and {session['profile'] for session in exchanges['sessions']} == models,
+            'One exchange session per supported profile')
+    requests = {row['id']: row for row in vectors['requests']}
+    responses = {row['id']: row for row in vectors['responses']}
+    profile_map = {profile['id']: profile for profile in profiles}
+    for session in exchanges['sessions']:
+        require(session['service'] in profile_map[session['profile']]['service_uuids'], 'Exchange service matches profile')
+        for role in ('writer', 'response'):
+            require(re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', session[role]), 'Exchange characteristic UUID')
+        for phase in ('identity', 'charging', 'discharging', 'no_load'):
+            if phase not in session:
+                continue
+            require(session[phase], 'Nonempty exchange phase')
+            for request_id, response_id in session[phase]:
+                require(request_id in requests and response_id in responses, 'Exchange references existing packets')
+                request, response = requests[request_id], responses[response_id]
+                require(request['protocol'] == response['protocol'], 'Exchange protocol agreement')
+                packet = bytes.fromhex(response['hex'])
+                offset = {'blackvue_legacy': 3, 'itsc': 6, 'neo_plus': 2, 'viofo_bp100': 6}[response['protocol']]
+                require(int(request['command'], 16) == packet[offset], 'Reply command matches request')
+                require((response['kind'] == 'identity') == (phase == 'identity'), 'Identification precedes measurement examples')
+                if response_id == 'pc8_charging':
+                    require(response.get('state_evidence') == 'source_derived_not_hardware_observed_on_f141'
+                            and 'NOT hardware-verified' in session['notes'], 'PC8 charging evidence remains qualified')
+    require((ROOT / 'examples/communication.md').read_text() == render(vectors, exchanges, profile_map),
+            'Readable communication examples must match canonical JSON; run scripts/render_examples.py')
     files = [path for path in ROOT.rglob('*') if path.is_file()
              and '.git' not in path.relative_to(ROOT).parts
              and '__pycache__' not in path.relative_to(ROOT).parts]

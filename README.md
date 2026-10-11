@@ -18,13 +18,14 @@ Coverage reviewed October 11, 2026. A related name, UUID or shared manufacturer 
 
 ## Start here
 
+- [Example Bluetooth conversations: initialization, charging and discharging](examples/communication.md)
 - [Shared BlackVue legacy transport and field map](docs/blackvue-legacy.md)
 - [Cellink Neo+ family protocol](docs/cellink-neo-plus.md)
 - [Implementing a Bluetooth client](docs/methodology.md)
 - [Sources and attribution](docs/sources.md)
 - [Contributing](CONTRIBUTING.md)
 
-The seven machine-readable coverage profiles live in [profiles/](profiles/). [Synthetic packet examples](examples/vectors.json) demonstrate offsets and units without private captures. Legacy/ITSC trailers and BP100 CRC fields are **unverified zero placeholders**; Neo+ family replies end in `0A 0D` (LF then CR) and use zeroed PIN/reserved fields. Do not transmit response fixtures to a battery.
+The seven machine-readable coverage profiles live in [profiles/](profiles/). [Synthetic packet fixtures](examples/vectors.json) demonstrate offsets and units; [exchange sequences](examples/exchanges.json) and the [annotated conversation guide](examples/communication.md) show how to subscribe, identify and query each battery in charging/discharging states. Examples contain no private captures. PC8 charging state remains source-derived, not hardware-verified on F141. Legacy/ITSC trailers and BP100 CRC fields are **unverified zero placeholders**; Neo+ family replies end in `0A 0D` (LF then CR) and use zeroed PIN/reserved fields. Do not transmit response fixtures to a battery.
 
 ## Interpreting fields
 

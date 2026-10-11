@@ -1,0 +1,92 @@
+{
+  "synthetic": true,
+  "note": "Independent charging/discharging illustrations, not a continuous captured session. TX requests are documented commands; RX values and unverified trailers are synthetic.",
+  "sessions": [
+    {
+      "profile": "b124",
+      "title": "BlackVue B-124, firmware 1.44",
+      "service": "0000fff0-0000-1000-8000-00805f9b34fb",
+      "writer": "0000fff2-0000-1000-8000-00805f9b34fb",
+      "response": "0000fff1-0000-1000-8000-00805f9b34fb",
+      "write_mode": "write without response",
+      "identity": [["blackvue_identify", "b124_identity"]],
+      "charging": [["blackvue_status", "b124_charging"]],
+      "discharging": [["blackvue_status", "b124_discharge"]],
+      "notes": "Match B-124 and revision 144 before decoding the classic status layout. Output current can be positive during charging."
+    },
+    {
+      "profile": "b130a",
+      "title": "BlackVue B-130A, firmware 1.61",
+      "service": "0000fff0-0000-1000-8000-00805f9b34fb",
+      "writer": "0000fff2-0000-1000-8000-00805f9b34fb",
+      "response": "0000fff1-0000-1000-8000-00805f9b34fb",
+      "write_mode": "write without response",
+      "identity": [["blackvue_identify", "b130a_identity"]],
+      "charging": [["blackvue_status", "b130a_charging"]],
+      "discharging": [["blackvue_status", "b130a_discharge"]],
+      "notes": "Match B-130A and revision 161; use extended voltage offsets 23/25. Zero output current while input is powered does not establish zero attached-load consumption."
+    },
+    {
+      "profile": "b130x",
+      "title": "BlackVue B-130X, firmware 1.61",
+      "service": "0000fff0-0000-1000-8000-00805f9b34fb",
+      "writer": "0000fff2-0000-1000-8000-00805f9b34fb",
+      "response": "0000fff1-0000-1000-8000-00805f9b34fb",
+      "write_mode": "write without response",
+      "identity": [["blackvue_identify", "b130x_identity"]],
+      "charging": [["blackvue_status", "b130x_charging"]],
+      "discharging": [["blackvue_status", "b130x_discharge"]],
+      "no_load": [["blackvue_status", "b130x_no_load"]],
+      "notes": "Match B-130X and revision 161 separately from B-130A. State 0/zero current can coexist with output voltage. Charging-mode zero discharge current does not prove that a camera is off."
+    },
+    {
+      "profile": "bi750",
+      "title": "BlackboxMyCar BI-750, firmware 1.6",
+      "service": "49535343-fe7d-4ae5-8fa9-9fafd205e455",
+      "writer": "49535343-8841-43f4-a8d4-ecbe34729bb3",
+      "response": "49535343-1e4d-4bd9-ba61-23c647249616",
+      "write_mode": "write with response in the upstream implementation; inspect actual properties",
+      "identity": [["bi750_identify", "bi750_identity"]],
+      "charging": [["bi750_vitals_request", "bi750_vitals"], ["bi750_electrical_request", "bi750_electrical"], ["bi750_time_capacity_request", "bi750_time_capacity"]],
+      "discharging": [["bi750_vitals_request", "bi750_discharge_vitals"], ["bi750_electrical_request", "bi750_discharge_electrical"], ["bi750_time_capacity_request", "bi750_discharge_time_capacity"]],
+      "notes": "Word 32 identifies model/firmware. Cycle 33/34/35 and timestamp groups separately; they are not an atomic snapshot. Raw mode 4 is not a complete state specification. Raw mode 0 plus zero input and positive output supports discharging; zero charging-mode output current does not establish zero camera consumption."
+    },
+    {
+      "profile": "cellink-neo6",
+      "title": "Cellink Neo, firmware 1.52",
+      "service": "0000fff0-0000-1000-8000-00805f9b34fb",
+      "writer": "0000fff2-0000-1000-8000-00805f9b34fb",
+      "response": "0000fff1-0000-1000-8000-00805f9b34fb",
+      "write_mode": "write without response",
+      "identity": [["blackvue_identify", "neo6_identity"]],
+      "charging": [["blackvue_status", "neo6_charging_no_load"]],
+      "discharging": [["blackvue_status", "neo6_discharge"]],
+      "no_load": [["blackvue_status", "neo6_no_load"]],
+      "notes": "The product is Cellink Neo; its returned six-byte identity is Neo 6. Require revision 152 and use classic voltage offsets 11/12, not the B-130 extended map. This charging illustration has no output load. State 0/zero runtime with no load does not indicate an empty battery. Shared telemetry does not authorize BlackVue configuration commands."
+    },
+    {
+      "profile": "powercell8",
+      "title": "BlackboxMyCar PowerCell 8, F141",
+      "service": "0000ff12-0000-1000-8000-00805f9b34fb",
+      "writer": "0000ff01-0000-1000-8000-00805f9b34fb",
+      "response": "0000ff02-0000-1000-8000-00805f9b34fb",
+      "write_mode": "write without response",
+      "identity": [["pc8_get_30", "pc8_identity"]],
+      "charging": [["pc8_get_41", "pc8_charging"]],
+      "discharging": [["pc8_get_41", "pc8_discharge"]],
+      "notes": "Charging state 1 is source-derived and NOT hardware-verified on F141; this fixture illustrates the documented branch, not accepted charging support. Discharging state 2 is hardware-observed. Require PWC8 identity before status. Use the six-byte requests on FF12, not the separately present FFF0 service; LF then CR terminates frames. Settings PIN and reserved fields are zeroed, not real credentials."
+    },
+    {
+      "profile": "bp100",
+      "title": "VIOFO BP100, V39",
+      "service": "c0a12213-64b5-6e57-3299-aab3c4d1eaf0",
+      "writer": "c0a12213-143a-7ed7-5291-a3bfc5c1da0f",
+      "response": "c0a12213-2455-fe56-3866-5ad3e4f112b0",
+      "write_mode": "write with response where supported; observed writer also supports no-response",
+      "identity": [["bp100_get_41", "bp100_identity"]],
+      "charging": [["bp100_get_01", "bp100_charging"], ["bp100_get_02", "bp100_temperature"], ["bp100_get_03", "bp100_input"], ["bp100_get_04", "bp100_output"]],
+      "discharging": [["bp100_get_01", "bp100_discharging"], ["bp100_get_02", "bp100_temperature"], ["bp100_get_03", "bp100_input_off"], ["bp100_get_04", "bp100_output"]],
+      "notes": "GET_MODE must return positive firmware and application mode 16 before 01-04; boot mode 1 is not ready. The charging bit is command-01 payload bit 7, not the same enumeration as BlackVue or PC8. Current fractions differ: input p2/10+p3, output p2/100+p3. Outgoing CRC is XMODEM; native sessions skip incoming CRC verification. No UID/binding mutation is part of these exchanges."
+    }
+  ]
+}

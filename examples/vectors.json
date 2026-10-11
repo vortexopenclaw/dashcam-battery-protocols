@@ -170,7 +170,10 @@
       "firmware_revision": 161,
       "model": "B-130X",
       "hex": "43 06 0C 52 00 A1 00 00 00 00 42 2D 31 33 30 58 00",
-      "expected": {"firmware": "1.61", "model": "B-130X"}
+      "expected": {
+        "firmware": "1.61",
+        "model": "B-130X"
+      }
     },
     {
       "id": "b130x_charging",
@@ -180,11 +183,16 @@
       "model": "B-130X",
       "hex": "43 06 18 51 B4 00 00 00 1E 7C 90 00 00 00 13 88 00 00 1D 4C 01 00 00 00 78 00 8C 00 00",
       "expected": {
-        "charge_percent": 80, "temperature_c": 24,
-        "input_v": 12.0, "input_a": 5.0,
-        "output_v": 14.0, "output_a": 0.0,
-        "runtime_estimate_min": 0, "time_to_full_min": 30,
-        "reported_capacity_mah": 7500, "state_code": 1
+        "charge_percent": 80,
+        "temperature_c": 24,
+        "input_v": 12.0,
+        "input_a": 5.0,
+        "output_v": 14.0,
+        "output_a": 0.0,
+        "runtime_estimate_min": 0,
+        "time_to_full_min": 30,
+        "reported_capacity_mah": 7500,
+        "state_code": 1
       }
     },
     {
@@ -195,11 +203,16 @@
       "model": "B-130X",
       "hex": "43 06 18 51 96 01 2C 00 00 7D 88 00 00 00 00 00 01 F4 1D 4C 03 00 00 00 00 00 82 00 00",
       "expected": {
-        "charge_percent": 50, "temperature_c": 25,
-        "input_v": 0.0, "input_a": 0.0,
-        "output_v": 13.0, "output_a": 0.5,
-        "runtime_estimate_min": 300, "time_to_full_min": 0,
-        "reported_capacity_mah": 7500, "state_code": 3
+        "charge_percent": 50,
+        "temperature_c": 25,
+        "input_v": 0.0,
+        "input_a": 0.0,
+        "output_v": 13.0,
+        "output_a": 0.5,
+        "runtime_estimate_min": 300,
+        "time_to_full_min": 0,
+        "reported_capacity_mah": 7500,
+        "state_code": 3
       }
     },
     {
@@ -210,11 +223,16 @@
       "model": "B-130X",
       "hex": "43 06 18 51 96 00 00 00 00 7D 88 00 00 00 00 00 00 00 1D 4C 00 00 00 00 00 00 82 00 00",
       "expected": {
-        "charge_percent": 50, "temperature_c": 25,
-        "input_v": 0.0, "input_a": 0.0,
-        "output_v": 13.0, "output_a": 0.0,
-        "runtime_estimate_min": 0, "time_to_full_min": 0,
-        "reported_capacity_mah": 7500, "state_code": 0
+        "charge_percent": 50,
+        "temperature_c": 25,
+        "input_v": 0.0,
+        "input_a": 0.0,
+        "output_v": 13.0,
+        "output_a": 0.0,
+        "runtime_estimate_min": 0,
+        "time_to_full_min": 0,
+        "reported_capacity_mah": 7500,
+        "state_code": 0
       }
     },
     {
@@ -381,6 +399,148 @@
         "output_a": 0.7,
         "output_w": 9.17,
         "runtime_estimate_min": 600
+      },
+      "model": "BP100"
+    },
+    {
+      "id": "b130a_charging",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "firmware_revision": 161,
+      "model": "B-130A",
+      "hex": "43 06 18 51 B4 00 00 00 1E 7C 90 00 00 00 13 88 00 00 1D 4C 01 00 00 00 78 00 8C 00 00",
+      "expected": {
+        "charge_percent": 80,
+        "temperature_c": 24,
+        "input_v": 12.0,
+        "input_a": 5.0,
+        "output_v": 14.0,
+        "output_a": 0.0,
+        "runtime_estimate_min": 0,
+        "time_to_full_min": 30,
+        "reported_capacity_mah": 7500,
+        "state_code": 1
+      }
+    },
+    {
+      "id": "bi750_identity",
+      "protocol": "itsc",
+      "kind": "identity",
+      "hex": "49 54 53 43 00 00 32 10 00 00 00 42 69 37 35 30 00",
+      "expected": {
+        "firmware": "1.6",
+        "model": "Bi750"
+      }
+    },
+    {
+      "id": "bi750_discharge_vitals",
+      "protocol": "itsc",
+      "kind": "vitals",
+      "hex": "49 54 53 43 00 00 33 32 19 00 00 00 00 00 00 00",
+      "expected": {
+        "charge_percent": 50,
+        "temperature_c": 25,
+        "state_code": 0
+      }
+    },
+    {
+      "id": "bi750_discharge_electrical",
+      "protocol": "itsc",
+      "kind": "electrical",
+      "hex": "49 54 53 43 00 00 34 00 00 00 00 32 C8 01 F4 00",
+      "expected": {
+        "input_v": 0.0,
+        "input_a": 0.0,
+        "input_w": 0.0,
+        "output_v": 13.0,
+        "output_a": 0.5,
+        "output_w": 6.5
+      }
+    },
+    {
+      "id": "bi750_discharge_time_capacity",
+      "protocol": "itsc",
+      "kind": "time_capacity",
+      "hex": "49 54 53 43 00 00 35 00 00 01 2C 3A 98 00 00 00",
+      "expected": {
+        "time_to_full_min": 0,
+        "runtime_estimate_min": 300,
+        "reported_capacity_mah": 15000
+      }
+    },
+    {
+      "id": "neo6_discharge",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "hex": "43 06 12 51 96 01 2C 00 00 7D 82 00 82 00 00 00 01 F4 17 70 03 00 00",
+      "expected": {
+        "charge_percent": 50,
+        "temperature_c": 25,
+        "input_v": 0.0,
+        "input_a": 0.0,
+        "output_v": 13.0,
+        "output_a": 0.5,
+        "reported_capacity_mah": 6000,
+        "time_to_full_min": 0,
+        "runtime_estimate_min": 300,
+        "state_code": 3
+      },
+      "firmware_revision": 152,
+      "model": "Neo 6"
+    },
+    {
+      "id": "neo6_no_load",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "hex": "43 06 12 51 96 00 00 00 00 7D 82 00 82 00 00 00 00 00 17 70 00 00 00",
+      "expected": {
+        "charge_percent": 50,
+        "temperature_c": 25,
+        "input_v": 0.0,
+        "input_a": 0.0,
+        "output_v": 13.0,
+        "output_a": 0.0,
+        "reported_capacity_mah": 6000,
+        "time_to_full_min": 0,
+        "runtime_estimate_min": 0,
+        "state_code": 0
+      },
+      "firmware_revision": 152,
+      "model": "Neo 6"
+    },
+    {
+      "id": "pc8_charging",
+      "protocol": "neo_plus",
+      "kind": "status",
+      "hex": "40 40 41 00 44 8D 50 E0 2E C8 32 88 13 00 00 00 00 C8 32 1E 00 00 00 19 00 4C 1D 00 00 4C 1D 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0A 0D",
+      "expected": {
+        "firmware": "F141",
+        "charge_percent": 80,
+        "input_v": 12.0,
+        "input_a": 5.0,
+        "input_w": 60.0,
+        "output_v": 13.0,
+        "output_a": 0.0,
+        "output_w": 0.0,
+        "temperature_c": 25,
+        "reported_capacity_mah": 15000,
+        "time_to_full_min": 30,
+        "runtime_estimate_min": 0,
+        "state_code": 1
+      },
+      "model": "PWC8",
+      "state_evidence": "source_derived_not_hardware_observed_on_f141"
+    },
+    {
+      "id": "bp100_input_off",
+      "protocol": "viofo_bp100",
+      "kind": "status",
+      "hex": "AA 55 AA 55 08 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00",
+      "expected": {
+        "input_v": 0.0,
+        "input_a": 0.0,
+        "input_w": 0.0,
+        "time_to_full_min": 0
       },
       "model": "BP100"
     }
