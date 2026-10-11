@@ -17,8 +17,52 @@ def be16(packet, offset):
     return int.from_bytes(packet[offset:offset + 2], 'big')
 
 
+def le(packet, offset, size=2):
+    return int.from_bytes(packet[offset:offset + size], 'little')
+
+
+def bp_crc(packet):
+    crc = 0
+    for index, byte in enumerate(packet):
+        crc ^= (0 if index in (8, 9) else byte) << 8
+        for _ in range(8):
+            crc = ((crc << 1) ^ (0x1021 if crc & 0x8000 else 0)) & 0xffff
+    return crc
+
+
 def decode_example(example, packet):
     """Check documented example fields offline; no BLE or setting operations."""
+    if example['protocol'] == 'viofo_bp100':
+        require(packet[:4] == bytes.fromhex('aa55aa55') and len(packet) == le(packet, 4) + 12, 'BP100 framing')
+        command, payload = packet[6], packet[12:]
+        require(len(payload) == {0x41: 5, 1: 2, 2: 4, 3: 8, 4: 8}.get(command), 'BP100 shape')
+        require(packet[8:10] == bytes(2), 'Synthetic unverified BP100 CRC placeholder')
+        if command == 0x41:
+            require(payload[4] == 16 and le(payload, 0, 4) > 0, 'BP100 application identity')
+            return {'firmware': str(le(payload, 0, 4)), 'model': 'BP100'}
+        if command == 1:
+            return {'charge_percent': payload[0] & 127, 'state_code': int(bool(payload[0] & 128))}
+        if command == 2:
+            temperature = payload[0] / 10 + (payload[1] & 127)
+            return {'temperature_c': -temperature if payload[1] & 128 else temperature}
+        prefix = 'input_' if command == 3 else 'output_'
+        volts = payload[0] / 10 + payload[1]
+        amps = payload[2] / (10 if command == 3 else 100) + payload[3]
+        return {prefix + 'v': volts, prefix + 'a': amps, prefix + 'w': volts * amps,
+                'time_to_full_min' if command == 3 else 'runtime_estimate_min': le(payload, 6)}
+    if example['protocol'] == 'neo_plus':
+        require(packet[:2] == b'@@' and len(packet) == packet[4] + 7 and packet[-2:] == b'\n\r', 'Neo+ framing')
+        if example['kind'] == 'identity':
+            require(packet[2] == 0x30, 'Neo+ identity command')
+            return {'model': packet[5:-2].decode('ascii')}
+        require(packet[2] == 0x41 and len(packet) == 75 and packet[59:61] == bytes(2), 'Neo+ standard status/PIN placeholders')
+        iv, ov, ia, oa = (le(packet, offset) / 1000 for offset in (7, 9, 11, 13))
+        return {'firmware': 'F' + str(packet[5]), 'charge_percent': packet[6],
+                'input_v': iv, 'output_v': ov, 'input_a': ia, 'output_a': oa,
+                'input_w': iv * ia, 'output_w': ov * oa, 'battery_v': le(packet, 17) / 1000,
+                'temperature_c': int.from_bytes(packet[23:25], 'little', signed=True),
+                'time_to_full_min': le(packet, 19), 'runtime_estimate_min': le(packet, 21),
+                'reported_capacity_mah': le(packet, 25, 4) + le(packet, 29, 4), 'state_code': packet[44]}
     if example['protocol'] == 'blackvue_legacy':
         require(packet[:2] == b'\x43\x06', 'Legacy example header')
         require(len(packet) == packet[2] + 5, 'Legacy example length')
@@ -56,23 +100,22 @@ def decode_example(example, packet):
 
 
 def main():
-    models = {'b124', 'b130a', 'bi750', 'powercell8', 'bp100'}
+    models = {'b124', 'b130a', 'bi750', 'powercell8', 'bp100', 'cellink-neo6'}
     profiles = [json.loads(path.read_text()) for path in sorted((ROOT / 'profiles').glob('*.json'))]
-    require({profile['id'] for profile in profiles} == models, 'Five distinct model profiles required')
+    require({profile['id'] for profile in profiles} == models, 'Six distinct model profiles required')
     for profile in profiles:
         require(profile['incoming_checksum'] == 'unverified', 'Checksum evidence must remain explicit')
-        require(profile['usable_capacity_measured'] is False, 'Configured capacity is not health')
+        require(profile['capacity_semantics'] in ('configured_mah', 'configured_base_plus_expansion_mah',
+                                                  'not_reported_by_measurement_queries'), 'Capacity field semantics')
         require((ROOT / profile['reference']).is_file(), 'Model reference missing')
         require((ROOT / profile['evidence_page']).is_file(), 'Evidence reference missing')
         for uuid in profile['service_uuids']:
             require(re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', uuid), 'UUID syntax')
         if profile['coverage'] == 'hardware_telemetry':
-            require(profile['tested_firmware'] and profile['telemetry_status_samples'] > 0,
-                    'Hardware telemetry needs scoped firmware and samples')
+            require(profile['tested_firmware'] and profile['protocol'], 'Implemented telemetry needs scoped firmware/protocol')
         else:
             require(profile['coverage'] in ('gatt_discovery_only', 'no_hardware_capture'), 'Coverage value')
-            require(profile['protocol'] is None and not profile['tested_firmware']
-                    and profile['telemetry_status_samples'] == 0, 'Unknown models cannot inherit telemetry')
+            require(profile['protocol'] is None and not profile['tested_firmware'], 'Unknown models cannot inherit telemetry')
     vectors = json.loads((ROOT / 'examples/vectors.json').read_text())
     require(vectors['synthetic'] is True and vectors['response_checksum'] == 'unverified_zero_placeholder',
             'Examples must be synthetic and disclose unknown trailers')
@@ -88,13 +131,20 @@ def main():
             for byte in packet[:-1]:
                 checksum ^= byte
             require(checksum == packet[-1], 'Request XOR')
+        elif request['protocol'] == 'viofo_bp100':
+            require(command in (0x41, 1, 2, 3, 4) and len(packet) == 12
+                    and packet[:4] == bytes.fromhex('aa55aa55') and le(packet, 4) == 0
+                    and packet[6] == command and le(packet, 8) == bp_crc(packet), 'BP100 request and outgoing CRC')
+        elif request['protocol'] == 'neo_plus':
+            require(command in (0x30, 0x41) and packet == b'@@' + bytes((command, 0, 10, 13)), 'Exact six-byte Neo+ request')
         else:
             require(request['protocol'] == 'itsc' and command in (0x32, 0x33, 0x34, 0x35)
                     and packet == b'ITSC\x00\x00' + bytes((command, 0)), 'Telemetry-only ITSC request')
     for example in vectors['responses']:
         ids.append(example['id'])
         packet = bytes.fromhex(example['hex'])
-        require(packet[-1] == 0, 'Synthetic response trailer placeholder')
+        if example['protocol'] in ('blackvue_legacy', 'itsc'):
+            require(packet[-1] == 0, 'Synthetic response trailer placeholder')
         values = decode_example(example, packet)
         for field, expected in example['expected'].items():
             require(field in values, f'{example["id"]}: missing field {field}')
@@ -110,7 +160,8 @@ def main():
                  r'\b(?:ghp_|github_pat_|sk_live_)[A-Za-z0-9_]{12,}',
                  r'\b(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}\b',
                  r'\b(?:B124|130A)[0-9A-F]{4,}\b', r'PWC8\s+[0-9A-F]{6}\b',
-                 r'phone-capture-\d', r'vortex-battery-lab[^\s]*workers\.dev']
+                 r'phone-capture-\d', r'vortex-battery-lab[^\s]*workers\.dev',
+                 r'CN6-[0-9A-F]{4}\b', r'\b20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d']
     for path in files:
         relative = path.relative_to(ROOT)
         require(path.suffix in ('.md', '.json', '.py', '.yml')

@@ -28,6 +28,18 @@ Targeted offline analysis of the battery activity, Bluetooth connection manager 
 
 The upstream hardware validation is Neo 8+; its manufacturer-app model list provides a PowerCell 8 research lead. No upstream setting implementation is copied into this reference.
 
-## Project hardware observations
+## Original Cellink Neo6
 
-Vortex Radar's October 10, 2026 battery sessions and separate manufacturer-app screenshots support the aggregate summaries in [methodology](methodology.md). Private raw captures were replayed through the working telemetry parser. Public examples are newly constructed synthetic vectors, not excerpts from those captures. This is an unofficial community reference, not a manufacturer-certified specification.
+Original-Neo context comes from the pinned [cellink2mqtt protocol notes](https://github.com/RobXYZ/cellink2mqtt/blob/d97ab241aa92d22a00482ecdcddf28e491ad13b5/PROTOCOL.md), which distinguish the older `kr.co.egens.cellinkbatterybtcontrol` family and `43 06` framing. The shared legacy field map is independently interpreted from the BlackVue implementation above and corroborated by Neo6/1.52 replies. Other Neo variants and Neo-specific settings remain unverified.
+
+## VIOFO BP100
+
+- [Official current app page](https://www.viofo.com/pages/viofo-app), package `com.viofo.dashcam`.
+- [Manufacturer BP100/HK6 setup and display behavior](https://www.viofo.com/blogs/viofo-car-dash-camera-guide-faq-and-news/bp100-hk6-dashcam-app-setup).
+- [Manufacturer BP100 manual](https://viofotech.com/download/manual/BP100/UserManual.pdf).
+
+Targeted offline analysis used Android2.2.03, base APK SHA256 `6b0ec5a846cbe88b804fedc458ad0bebb38fbb2bee157bfe9f246f47e7a9fe2d`, privately obtained from a third-party mirror, not an official APK delivery endpoint. APK signature/hash checks establish artifact identity, not an independently proven manufacturer delivery chain. No APK or decompiled source is redistributed.
+
+Battery transport, builders/parsers and session initialization establish C0 UUIDs, read-only GET41/01–04, XMODEM outgoing CRC and command-specific fields. The actual session's explicit incoming-CRC-disabled override corrects the earlier default-parser inference. Direct phone/Mac V39 responses independently corroborate the documented measurements. Unknown timeA/configured extension scaling/binding behavior is not silently promoted to hardware evidence. Public app/manual pages establish provenance and user-visible behavior, not an official wire specification.
+
+This is an unofficial protocol reference. Public examples are synthetic; manufacturer software and private device captures are not redistributed.

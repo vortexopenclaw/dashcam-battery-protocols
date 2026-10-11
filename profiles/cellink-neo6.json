@@ -1,0 +1,15 @@
+{
+  "id": "cellink-neo6",
+  "manufacturer": "Cellink",
+  "model": "Neo 6",
+  "coverage": "hardware_telemetry",
+  "protocol": "blackvue_legacy",
+  "tested_firmware": ["1.52"],
+  "source_only_variants": [],
+  "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
+  "reference": "docs/cellink-neo6.md",
+  "reviewed": "2026-10-10",
+  "evidence_page": "docs/methodology.md",
+  "incoming_checksum": "unverified",
+  "capacity_semantics": "configured_mah"
+}

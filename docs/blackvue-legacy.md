@@ -1,5 +1,7 @@
 # BlackVue B-124 / B-130A wire protocol
 
+The [original Cellink Neo6](cellink-neo6.md) firmware1.52 also uses this transport and classic map. Its own identity/firmware gate and evidence limits remain separate from BlackVue variants.
+
 Evidence: manufacturer-implementation analysis plus hardware observations on B-124 firmware 1.44 and B-130A firmware 1.61. Firmware branches outside those two revisions are source-derived, not hardware-tested here. See [sources](sources.md) and [methodology](methodology.md).
 
 ## GATT transport
@@ -43,7 +45,7 @@ Incoming trailer/checksum semantics are **unverified**. Observed connection-read
 | `51`, B-124 1.44 | 23 bytes, payload length 18 | Classic status |
 | `51`, B-130A 1.61 | 29 bytes, payload length 24 | Extended status |
 
-Those lengths describe this dataset, not every firmware variant. Repeated `71` messages prove that the connection is alive, not that charge or temperature was decoded.
+Those lengths apply to the named firmware revisions, not every variant. Repeated `71` messages indicate connection readiness, not a status reply.
 
 ## Firmware reply (`52`)
 
@@ -106,4 +108,15 @@ The manufacturer UI interprets state 2 with positive input current or voltage as
 
 ## Units and estimates
 
-Some manufacturer screens label current `Ah`; the inspected implementation scales these current fields by 1000. This reference uses A and calculates power from voltage/current. The runtime field is the raw battery estimate. Manufacturer UI averaging can differ, so asynchronous screenshots need ballpark agreement rather than exact equality. See [B-124 observations](b124.md) and [B-130A observations](b130a.md).
+Some manufacturer screens label current `Ah`; the implementation scales these fields by 1000, yielding A. Power is calculated from voltage/current. The runtime field is the raw battery estimate, independent of manufacturer UI averaging. See the [B-124](b124.md) and [B-130A](b130a.md) model-specific layouts.
+
+## Configuration commands
+
+Source-derived from BlackVue Android 3.60; these writes remain unverified on hardware. Requests use the same `43 06 LL CC payload XOR` framing.
+
+| Command | Payload | Meaning |
+| --- | --- | --- |
+| `64` | One byte, 0 or 1 | Beep disabled/enabled |
+| `6A` | Two-byte unsigned big-endian mAh | Configured battery capacity, B-124/B-124X app path |
+
+The native app waits for a reply carrying the matching command, then queries status `51`. Its B-124/B-124X save flow sends `64` followed by `6A`; other model paths do not automatically send capacity. Preserve model-specific limits. Neo 6 settings compatibility and full acknowledgement payload/persistence behavior remain unspecified.

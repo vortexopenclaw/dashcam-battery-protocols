@@ -1,6 +1,6 @@
 # Dashcam Battery Bluetooth Protocols
 
-An open technical reference for reading dashcam battery telemetry over Bluetooth Low Energy. It documents transport UUIDs, telemetry requests, packet layouts, units and firmware differences. The reference is independent of any monitoring app.
+An open Bluetooth protocol reference for building your own dashcam-battery apps and interfaces, including keeping batteries usable after manufacturer app support ends. UUIDs, connection sequences, commands, packet layouts, units and firmware differences are documented independently of any particular app.
 
 ## Battery coverage
 
@@ -9,32 +9,31 @@ An open technical reference for reading dashcam battery telemetry over Bluetooth
 | BlackVue B-124 | Hardware-observed telemetry, firmware 1.44 | `43 06`, big-endian | [B-124](docs/b124.md) |
 | BlackVue B-130A | Hardware-observed telemetry, firmware 1.61 | `43 06`, extended voltage fields | [B-130A](docs/b130a.md) |
 | BlackboxMyCar BI-750 | Hardware-observed telemetry, firmware 1.6 | `ITSC`, big-endian | [BI-750](docs/bi750.md) |
-| BlackboxMyCar PowerCell 8 | GATT discovery only | Unconfirmed; both `FF12` and `FFF0` services observed | [PowerCell 8](docs/powercell8.md) |
-| VIOFO BP100 | No hardware capture in this dataset | Unknown | [BP100](docs/bp100.md) |
+| BlackboxMyCar PowerCell 8 | Hardware-observed telemetry, F141 | `@@`, little-endian, `FF12` status transport | [PowerCell 8](docs/powercell8.md) |
+| VIOFO BP100 | Hardware-observed telemetry, V39 | `AA 55 AA 55`, command-specific decimal fields | [BP100](docs/bp100.md) |
+| Original Cellink Neo 6 | Hardware-observed telemetry, 1.52 | `43 06`, classic big-endian layout | [Neo 6](docs/cellink-neo6.md) |
 
 Coverage reviewed October 10, 2026. A related name, UUID or shared manufacturer does not establish protocol compatibility. B-124X, B-130X and Cellink Neo+ family references have separate evidence limits.
 
 ## Start here
 
 - [Shared BlackVue legacy transport and field map](docs/blackvue-legacy.md)
-- [Cellink Neo+ research lead](docs/cellink-neo-plus.md)
-- [Evidence and measurement methodology](docs/methodology.md)
+- [Cellink Neo+ family protocol](docs/cellink-neo-plus.md)
+- [Implementing a Bluetooth client](docs/methodology.md)
 - [Sources and attribution](docs/sources.md)
 - [Contributing](CONTRIBUTING.md)
 
-The five machine-readable coverage profiles live in [profiles/](profiles/). [Synthetic packet examples](examples/vectors.json) demonstrate offsets and units without publishing private captures. Their placeholder response trailer bytes are **not verified checksums**; do not transmit response fixtures to a battery.
+The six machine-readable coverage profiles live in [profiles/](profiles/). [Synthetic packet examples](examples/vectors.json) demonstrate offsets and units without private captures. Legacy/ITSC trailers and BP100 CRC fields are **unverified zero placeholders**; Neo+ family replies end in `0A 0D` (LF then CR) and use zeroed PIN/reserved fields. Do not transmit response fixtures to a battery.
 
-## Measurement semantics
+## Interpreting fields
 
-Compare manufacturer apps in the ballpark. Preserve raw values and per-field timestamps rather than forcing exact agreement across asynchronous readings. Report charge percentage, temperature, input/output voltage and current, raw time estimates and reported capacity separately. Calculate power as `V × A` and label it calculated.
+Preserve raw values and per-field timestamps when commands report different measurement groups. Decode input/output voltage and current separately. Calculate power as `V × A` and label it calculated.
 
 Reported capacity is a configured or device-reported value, not measured usable capacity, state of health or evidence that an expansion pack is present. Manufacturer displays may smooth runtime estimates or use an `Ah` label for a current field. See each protocol page for the supported interpretation.
 
 ## Scope
 
-This reference covers identification and telemetry. It does not provide setting changes, firmware writes, pairing resets or command brute force. Discover the selected battery's GATT properties, verify its identity and subscribe before sending model-specific requests. Unknown protocols remain unknown.
-
-Hardware observations include charging and discharging on the three decoded models, and connection while already charging. They do not prove unattended screen-off logging, automatic reconnection or simultaneous multi-pack connections.
+The reference documents known identification, status and configuration protocols. Incomplete command layouts are marked unknown rather than inferred from another model. Discover actual GATT properties, subscribe before querying, and match returned identity/firmware before selecting a decoder. Configuration support and locked-setting masks can differ by model. Test-session readings and application-specific logging history are intentionally omitted.
 
 ## Validate a contribution
 

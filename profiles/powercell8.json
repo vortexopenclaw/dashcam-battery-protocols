@@ -2,19 +2,17 @@
   "id": "powercell8",
   "manufacturer": "BlackboxMyCar",
   "model": "PowerCell 8",
-  "coverage": "gatt_discovery_only",
-  "protocol": null,
-  "tested_firmware": [],
+  "coverage": "hardware_telemetry",
+  "protocol": "neo_plus",
+  "tested_firmware": ["F141"],
   "source_only_variants": [],
   "service_uuids": [
     "0000ff12-0000-1000-8000-00805f9b34fb",
     "0000fff0-0000-1000-8000-00805f9b34fb"
   ],
-  "telemetry_status_samples": 0,
-  "initial_connection_while_charging": "unverified",
   "reference": "docs/powercell8.md",
   "reviewed": "2026-10-10",
   "evidence_page": "docs/methodology.md",
   "incoming_checksum": "unverified",
-  "usable_capacity_measured": false
+  "capacity_semantics": "configured_base_plus_expansion_mah"
 }

@@ -13,11 +13,9 @@
   "service_uuids": [
     "0000fff0-0000-1000-8000-00805f9b34fb"
   ],
-  "telemetry_status_samples": 346,
-  "initial_connection_while_charging": "unverified",
   "reference": "docs/b130a.md",
   "reviewed": "2026-10-10",
   "evidence_page": "docs/methodology.md",
   "incoming_checksum": "unverified",
-  "usable_capacity_measured": false
+  "capacity_semantics": "configured_mah"
 }
