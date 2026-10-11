@@ -1,6 +1,6 @@
 # Dashcam Battery Bluetooth Protocols
 
-An open Bluetooth protocol reference for the BlackVue B-124, B-130A and B-130X, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, Cellink Neo, and Thinkware iVolt XTRA / BAB-95. All eight models have scoped hardware telemetry evidence. iVolt XTRA charging and loaded-discharge DAT groups corroborate the native-app-derived ASCII map through strict production-parser acceptance; its battery firmware and returned model identity remain unknown. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. UUIDs, connection sequences, commands, packet layouts, units and firmware differences are documented independently of any particular app.
+An open Bluetooth protocol reference for the BlackVue B-124, B-130A and B-130X, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, Cellink Neo, and Thinkware iVolt XTRA / BAB-95. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. Each battery reference documents its Bluetooth services, connection sequence, commands, packet layouts and telemetry conversions, with example exchanges for implementing your own client. Model-specific behavior, known configuration commands and remaining unknowns are documented on the individual reference pages.
 
 ## Battery coverage
 
@@ -13,7 +13,7 @@ An open Bluetooth protocol reference for the BlackVue B-124, B-130A and B-130X, 
 | BlackboxMyCar PowerCell 8 | Hardware-observed telemetry, F141 | `@@`, little-endian, `FF12` status transport | [PowerCell 8](docs/powercell8.md) |
 | VIOFO BP100 | Hardware-observed telemetry, V39 | `AA 55 AA 55`, command-specific decimal fields | [BP100](docs/bp100.md) |
 | Cellink Neo | Hardware-observed telemetry, 1.52 | `43 06`, classic big-endian layout | [Cellink Neo](docs/cellink-neo6.md) |
-| Thinkware iVolt XTRA / BAB-95 | Hardware-corroborated charging/loaded-discharge DAT1-3 and DATA-only startup; firmware/model identity unknown | ASCII `Snn`, FFF1 notify / FFF2 write, additive checksum | [iVolt XTRA](docs/ivolt-xtra.md) |
+| Thinkware iVolt XTRA / BAB-95 | Hardware-observed charging/discharging telemetry; firmware unknown | ASCII `Snn`, additive checksum | [iVolt XTRA](docs/ivolt-xtra.md) |
 
 Coverage reviewed October 11, 2026. A related name, UUID or shared manufacturer does not establish protocol compatibility. B-124X and Cellink Neo+ family references have separate evidence limits.
 
@@ -26,7 +26,7 @@ Coverage reviewed October 11, 2026. A related name, UUID or shared manufacturer 
 - [Sources and attribution](docs/sources.md)
 - [Contributing](CONTRIBUTING.md)
 
-The eight machine-readable coverage profiles live in [profiles/](profiles/): eight hardware-telemetry profiles, with iVolt XTRA explicitly qualified by unknown firmware/model identity and production-parser evidence. [Synthetic packet fixtures](examples/vectors.json) demonstrate offsets and units; [exchange sequences](examples/exchanges.json) and the [annotated conversation guide](examples/communication.md) show model-specific subscription and initialization, including the hardware-corroborated iVolt control-triggered DATA-only stream. All iVolt examples remain synthetic: ordinary charging/loaded-discharge DAT interpretations are hardware-corroborated, while full, negative temperature, FFFF, special 9900 and alternative decimal-zero branches remain source-derived. CONT and response checksums are independently constructed, not replayed hardware bytes. GET1 is documented as a native privacy-sensitive read, not a required or authorized telemetry step. GET replies contain password/settings and are deliberately omitted. iVolt response checksums are computed lowercase ASCII sums, not zero placeholders; requests preserve two spaces and CR then LF. Examples contain no private captures. PC8 charging state remains source-derived, not hardware-verified on F141. Legacy/ITSC trailers and BP100 CRC fields are **unverified zero placeholders**; Neo+ family replies end in `0A 0D` (LF then CR) and use zeroed PIN/reserved fields. Do not transmit response fixtures to a battery.
+The eight machine-readable coverage profiles live in [profiles/](profiles/). [Synthetic packet fixtures](examples/vectors.json) demonstrate offsets and units; [exchange sequences](examples/exchanges.json) and the [annotated conversation guide](examples/communication.md) show subscription, initialization, charging and discharging examples for each battery. All examples use invented values, not private captures. The guide and model pages distinguish hardware-observed behavior from source-derived branches, explain checksum and placeholder conventions, and identify private fields that must not be logged. Do not transmit response fixtures to a battery.
 
 ## Interpreting fields
 
