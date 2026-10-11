@@ -1,7 +1,7 @@
 {
   "synthetic": true,
   "response_checksum": "per_protocol_see_notes",
-  "response_checksum_notes": {"legacy_itsc_bp100": "unverified_zero_placeholder", "neo_plus": "LF_CR_no_verified_checksum", "ivolt_ascii": "computed_additive_lowercase_ascii_source_derived"},
+  "response_checksum_notes": {"legacy_itsc_bp100": "unverified_zero_placeholder", "neo_plus": "LF_CR_no_verified_checksum", "ivolt_ascii": "computed_additive_lowercase_ascii_synthetic_not_raw_replay"},
   "note": "These invented responses illustrate fields; they are not captured measurements or packets to transmit.",
   "requests": [
     {
@@ -9,7 +9,7 @@
       "protocol": "ivolt_ascii",
       "command": "DATA",
       "hex": "53 30 30 2C 44 41 54 41 2C 20 20 45 0D 0A",
-      "evidence": "native_app_1.1.7_read_only_literal"
+      "evidence": "native_app_1.1.7_literal_DATA_only_startup_hardware_corroborated"
     },
     {
       "id": "ivolt_get1",
@@ -114,7 +114,7 @@
       "id": "ivolt_charging_dat1",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_illustration_of_hardware_corroborated_interpretation",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 31 30 2C 44 41 54 31 2C 31 34 32 2C 31 33 38 2C 37 33 2C 33 37 45 0D 0A",
       "expected": {
@@ -127,7 +127,7 @@
       "id": "ivolt_charging_dat2",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_illustration_of_hardware_corroborated_interpretation",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 31 32 2C 44 41 54 32 2C 31 32 37 2C 31 2C 31 2C 36 32 30 30 2C 38 64 45 0D 0A",
       "expected": {
@@ -144,7 +144,7 @@
       "id": "ivolt_charging_dat3",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_illustration_of_hardware_corroborated_interpretation",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 30 39 2C 44 41 54 33 2C 30 30 30 30 2C 30 2C 32 36 2C 66 63 45 0D 0A",
       "expected": {
@@ -159,7 +159,7 @@
       "id": "ivolt_discharge_dat1",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_illustration_of_hardware_corroborated_interpretation",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 30 38 2C 44 41 54 31 2C 30 2C 31 33 31 2C 36 31 2C 63 64 45 0D 0A",
       "expected": {
@@ -172,7 +172,7 @@
       "id": "ivolt_discharge_dat2",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_illustration_of_hardware_corroborated_interpretation",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 30 39 2C 44 41 54 32 2C 31 32 34 2C 33 2C 30 2C 30 2C 66 39 45 0D 0A",
       "expected": {
@@ -189,7 +189,7 @@
       "id": "ivolt_discharge_dat3",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_illustration_of_hardware_corroborated_interpretation",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 30 39 2C 44 41 54 33 2C 36 34 30 2C 34 31 35 2C 30 2C 30 38 45 0D 0A",
       "expected": {
@@ -204,7 +204,7 @@
       "id": "ivolt_unsupported_dat3",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_source_derived_branch_not_hardware_observed",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 31 31 2C 44 41 54 33 2C 46 46 46 46 2C 36 30 30 30 2C 30 2C 61 62 45 0D 0A",
       "expected": {
@@ -219,7 +219,7 @@
       "id": "ivolt_special_dat3",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_source_derived_branch_not_hardware_observed",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 31 30 2C 44 41 54 33 2C 39 39 30 30 2C 34 31 35 2C 30 2C 33 38 45 0D 0A",
       "expected": {
@@ -234,7 +234,7 @@
       "id": "ivolt_negative_standby_dat2",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_source_derived_branch_not_hardware_observed",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 30 37 2C 44 41 54 32 2C 37 2C 30 2C 30 2C 30 2C 39 34 45 0D 0A",
       "expected": {
@@ -251,7 +251,7 @@
       "id": "ivolt_full_dat2",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_source_derived_branch_not_hardware_observed",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 30 39 2C 44 41 54 32 2C 31 30 30 2C 32 2C 31 2C 30 2C 66 33 45 0D 0A",
       "expected": {
@@ -268,7 +268,7 @@
       "id": "ivolt_special_input_dat2",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_source_derived_branch_not_hardware_observed",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 31 32 2C 44 41 54 32 2C 31 32 31 2C 31 2C 31 2C 39 39 30 30 2C 39 31 45 0D 0A",
       "expected": {
@@ -285,7 +285,7 @@
       "id": "ivolt_decimal_zero_dat3",
       "protocol": "ivolt_ascii",
       "kind": "status",
-      "evidence": "source_derived_not_physical_telemetry_accepted",
+      "evidence": "synthetic_source_derived_branch_not_hardware_observed",
       "response_checksum": "computed_additive_lowercase_ascii",
       "hex": "53 30 35 2C 44 41 54 33 2C 30 2C 30 2C 30 2C 33 30 45 0D 0A",
       "expected": {

@@ -2,7 +2,7 @@
   "id": "ivolt-xtra",
   "manufacturer": "Thinkware",
   "model": "iVolt XTRA / BAB-95",
-  "coverage": "source_derived_telemetry_observed_controls",
+  "coverage": "hardware_telemetry",
   "protocol": "ivolt_ascii",
   "tested_firmware": [],
   "source_only_variants": [],
@@ -23,11 +23,37 @@
   },
   "hardware_evidence": [
     "gatt_transport",
-    "checksum_valid_CONT_controls"
+    "checksum_valid_CONT_controls",
+    "DATA_only_startup_without_GET1",
+    "DAT1_DAT2_DAT3_strict_production_parser_acceptance",
+    "charging_state_1",
+    "loaded_discharge_state_3",
+    "positive_temperature",
+    "ordinary_input_output_current",
+    "charging_zero_output_current_unavailable"
   ],
-  "physical_telemetry_accepted": false,
+  "physical_telemetry_accepted": true,
+  "support_qualification": {
+    "evidence_basis": "strict_production_parser_records_without_retained_raw_replies",
+    "returned_model_identity": "unknown",
+    "independent_raw_replay": false,
+    "measurement_calibration": false,
+    "group_cadence": "approximately_5_seconds_observed_not_hard_limit",
+    "transition_freshness": "old_numeric_values_may_persist_one_cycle_including_input_current_and_runtime",
+    "source_only_branches": [
+      "full_state_2",
+      "negative_temperature",
+      "FFFF_output_sentinel",
+      "special_9900",
+      "alternative_decimal_zero"
+    ],
+    "other_revisions": "unverified",
+    "complete_protection_semantics": "unknown",
+    "GET1_and_settings_writes": "not_authorized_by_telemetry_support"
+  },
   "firmware_identity": "unknown",
   "incoming_checksum": "native_DAT_not_gated_strict_client_recommended",
+  "checksum_evidence": "strict_production_parser_acceptance_not_independent_raw_replay",
   "capacity_semantics": "not_reported_by_measurement_queries",
   "request_commands": [
     "DATA",

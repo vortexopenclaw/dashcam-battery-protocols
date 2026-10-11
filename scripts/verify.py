@@ -107,33 +107,79 @@ def decode_example(example, packet):
             'reported_capacity_mah': be16(packet, 11)}
 
 
+IVOLT_HARDWARE_EVIDENCE = ['gatt_transport',
+ 'checksum_valid_CONT_controls',
+ 'DATA_only_startup_without_GET1',
+ 'DAT1_DAT2_DAT3_strict_production_parser_acceptance',
+ 'charging_state_1',
+ 'loaded_discharge_state_3',
+ 'positive_temperature',
+ 'ordinary_input_output_current',
+ 'charging_zero_output_current_unavailable']
+IVOLT_SUPPORT_QUALIFICATION = {'evidence_basis': 'strict_production_parser_records_without_retained_raw_replies',
+ 'returned_model_identity': 'unknown',
+ 'independent_raw_replay': False,
+ 'measurement_calibration': False,
+ 'group_cadence': 'approximately_5_seconds_observed_not_hard_limit',
+ 'transition_freshness': 'old_numeric_values_may_persist_one_cycle_including_input_current_and_runtime',
+ 'source_only_branches': ['full_state_2',
+                          'negative_temperature',
+                          'FFFF_output_sentinel',
+                          'special_9900',
+                          'alternative_decimal_zero'],
+ 'other_revisions': 'unverified',
+ 'complete_protection_semantics': 'unknown',
+ 'GET1_and_settings_writes': 'not_authorized_by_telemetry_support'}
+IVOLT_CORROBORATED_FIXTURES = ['ivolt_charging_dat1',
+ 'ivolt_charging_dat2',
+ 'ivolt_charging_dat3',
+ 'ivolt_discharge_dat1',
+ 'ivolt_discharge_dat2',
+ 'ivolt_discharge_dat3']
+
+
+def validate_ivolt_profile(profile):
+    """Require scoped hardware evidence without inventing firmware or raw replay."""
+    require(profile['capacity_semantics'] == 'not_reported_by_measurement_queries', 'iVolt has no measurement capacity field')
+    require(profile['incoming_checksum'] == 'native_DAT_not_gated_strict_client_recommended', 'Native DAT acceptance discrepancy')
+    require(profile['coverage'] == 'hardware_telemetry' and profile['protocol'] == 'ivolt_ascii',
+            'iVolt hardware telemetry protocol scope')
+    require(profile['tested_firmware'] == [] and profile['physical_telemetry_accepted'] is True
+            and profile['firmware_identity'] == 'unknown',
+            'iVolt accepted telemetry must retain unknown firmware')
+    require(profile['hardware_evidence'] == IVOLT_HARDWARE_EVIDENCE,
+            'iVolt hardware support requires precise observed behaviors')
+    require(profile.get('support_qualification') == IVOLT_SUPPORT_QUALIFICATION,
+            'iVolt hardware support requires explicit identity, replay, branch and calibration limits')
+    require(profile.get('checksum_evidence') == 'strict_production_parser_acceptance_not_independent_raw_replay',
+            'iVolt checksum acceptance is not independent raw replay')
+    require(profile['source_app']['version'] == '1.1.7' and profile['source_app']['package'] == 'com.thinkware.ivolt',
+            'Pinned source app')
+    require(profile['request_commands'] == ['DATA', 'GET1'] and profile['private_reply_commands'] == ['GET1']
+            and profile['unknown_raw_replies'] == 'withhold_before_persistence', 'iVolt read-only/privacy scope')
+
+
 def main():
     models = {'b124', 'b130a', 'b130x', 'bi750', 'powercell8', 'bp100', 'cellink-neo6'}
-    source_models = {'ivolt-xtra'}
+    qualified_models = {'ivolt-xtra'}
     profiles = [json.loads(path.read_text()) for path in sorted((ROOT / 'profiles').glob('*.json'))]
-    require({profile['id'] for profile in profiles} == models | source_models, 'Eight distinct model profiles required')
-    require({profile['id'] for profile in profiles if profile['coverage'] == 'hardware_telemetry'} == models,
-            'Hardware telemetry coverage must remain scoped to the seven accepted models')
-    require({profile['id'] for profile in profiles if profile['coverage'] == 'source_derived_telemetry_observed_controls'} == source_models,
-            'iVolt source-derived measurements must not become hardware acceptance')
+    require({profile['id'] for profile in profiles} == models | qualified_models, 'Eight distinct model profiles required')
+    require({profile['id'] for profile in profiles if profile['coverage'] == 'hardware_telemetry'} == models | qualified_models,
+            'Eight scoped hardware telemetry profiles required')
     for profile in profiles:
-        require(profile['incoming_checksum'] == ('native_DAT_not_gated_strict_client_recommended' if profile['id'] in source_models else 'unverified'), 'Checksum evidence must remain explicit')
+        require(profile['incoming_checksum'] == ('native_DAT_not_gated_strict_client_recommended' if profile['id'] in qualified_models else 'unverified'), 'Checksum evidence must remain explicit')
         require(profile['capacity_semantics'] in ('configured_mah', 'configured_base_plus_expansion_mah',
                                                   'not_reported_by_measurement_queries', 'unknown_not_decoded'), 'Capacity field semantics')
-        if profile['id'] in source_models:
+        if profile['id'] in qualified_models:
             require(profile['capacity_semantics'] == 'not_reported_by_measurement_queries', 'iVolt has no measurement capacity field')
         require((ROOT / profile['reference']).is_file(), 'Model reference missing')
         require((ROOT / profile['evidence_page']).is_file(), 'Evidence reference missing')
         for uuid in profile['service_uuids']:
             require(re.fullmatch(r'[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', uuid), 'UUID syntax')
-        if profile['coverage'] == 'hardware_telemetry':
-            require(profile['tested_firmware'] and profile['protocol'], 'Implemented telemetry needs scoped firmware/protocol')
+        if profile['id'] == 'ivolt-xtra':
+            validate_ivolt_profile(profile)
         else:
-            require(profile['coverage'] == 'source_derived_telemetry_observed_controls' and profile['protocol'] == 'ivolt_ascii', 'Source-derived iVolt coverage')
-            require(not profile['tested_firmware'] and profile['physical_telemetry_accepted'] is False and profile['firmware_identity'] == 'unknown', 'iVolt firmware and physical DAT acceptance remain unknown')
-            require(profile['hardware_evidence'] == ['gatt_transport', 'checksum_valid_CONT_controls'], 'iVolt hardware evidence remains control-only')
-            require(profile['source_app']['version'] == '1.1.7' and profile['source_app']['package'] == 'com.thinkware.ivolt', 'Pinned source app')
-            require(profile['request_commands'] == ['DATA', 'GET1'] and profile['private_reply_commands'] == ['GET1'] and profile['unknown_raw_replies'] == 'withhold_before_persistence', 'iVolt read-only/privacy scope')
+            require(profile['tested_firmware'] and profile['protocol'], 'Implemented telemetry needs scoped firmware/protocol')
     vectors = json.loads((ROOT / 'examples/vectors.json').read_text())
     require(vectors['synthetic'] is True and vectors['response_checksum'] == 'per_protocol_see_notes',
             'Examples must be synthetic and disclose unknown trailers')
@@ -168,7 +214,11 @@ def main():
             require(packet[-1] == 0, 'Synthetic response trailer placeholder')
         if example['protocol'] == 'ivolt_ascii':
             require(example['response_checksum'] == 'computed_additive_lowercase_ascii', 'iVolt computed response checksum')
-            require(example['evidence'] == ('observed_control_shape_independently_generated' if example['kind'] == 'control' else 'source_derived_not_physical_telemetry_accepted'), 'iVolt example evidence qualification')
+            expected_evidence = ('observed_control_shape_independently_generated' if example['kind'] == 'control'
+                                 else 'synthetic_illustration_of_hardware_corroborated_interpretation'
+                                 if example['id'] in IVOLT_CORROBORATED_FIXTURES
+                                 else 'synthetic_source_derived_branch_not_hardware_observed')
+            require(example['evidence'] == expected_evidence, 'iVolt synthetic example evidence qualification')
             require(packet[4:8] in (b'CONT', b'DAT1', b'DAT2', b'DAT3'), 'No GET/settings/raw unknown fixtures')
         values = decode_example(example, packet)
         for field, expected in example['expected'].items():
@@ -180,7 +230,7 @@ def main():
     require(len(ids) == len(set(ids)), 'Unique example IDs required')
     exchanges = json.loads((ROOT / 'examples/exchanges.json').read_text())
     require(exchanges['synthetic'] is True, 'Exchange examples must be synthetic')
-    require(len(exchanges['sessions']) == len(models | source_models) and {session['profile'] for session in exchanges['sessions']} == models | source_models,
+    require(len(exchanges['sessions']) == len(models | qualified_models) and {session['profile'] for session in exchanges['sessions']} == models | qualified_models,
             'One exchange session per supported profile')
     requests = {row['id']: row for row in vectors['requests']}
     responses = {row['id']: row for row in vectors['responses']}
@@ -193,11 +243,15 @@ def main():
             require(session['writer'] == profile_map['ivolt-xtra']['writer_uuid'] and session['response'] == profile_map['ivolt-xtra']['response_uuid'], 'iVolt FFF1/FFF2 roles')
             require(session['write_mode'] == 'write without response', 'iVolt write mode')
             require(session['control'] == [['ivolt_cont', 'ivolt_data']] and session['private_read_request'] == 'ivolt_get1', 'Control precedes DATA; GET reply omitted')
-            require('NOT physically accepted' in session['notes'] and 'firmware/model identity unknown' in session['notes'], 'iVolt evidence boundaries in guide')
+            require(all(limit in session['notes'] for limit in (
+                'hardware-corroborated', 'strict production-parser acceptance', 'not independent raw replay',
+                'firmware/model identity unknown', 'remain synthetic', 'source-derived only',
+                'not a hard limit', 'may persist one cycle', 'not needed or authorized')),
+                'iVolt evidence boundaries in guide')
             require(set(session['stream']) == {'charging', 'discharging', 'edge_cases'}, 'iVolt illustration groups')
             for phase, response_ids in session['stream'].items():
                 for response_id in response_ids:
-                    require(response_id in responses and responses[response_id]['protocol'] == 'ivolt_ascii' and responses[response_id]['kind'] == 'status', 'Source-derived stream references')
+                    require(response_id in responses and responses[response_id]['protocol'] == 'ivolt_ascii' and responses[response_id]['kind'] == 'status', 'Synthetic iVolt stream references')
                 if phase in ('charging', 'discharging'):
                     require([bytes.fromhex(responses[row]['hex'])[4:8] for row in response_ids] == [b'DAT1', b'DAT2', b'DAT3'], 'Three separate DAT groups')
             continue

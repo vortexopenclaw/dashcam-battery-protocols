@@ -10,7 +10,7 @@ INTRO = '''# Example Bluetooth conversations
 
 [vectors.json](vectors.json) contains individual machine-readable request/response fixtures. [exchanges.json](exchanges.json) connects them into model-specific initialization and charging/discharging sequences. This page shows those bytes with direction and decoded fields.
 
-**All RX values are invented.** These are independent illustrations, not raw captures or one continuous charging-to-discharge recording. Legacy/ITSC trailer bytes and incoming BP100 CRC fields are unverified zero placeholders. PC8 PIN/reserved bytes are zeroed. iVolt CONT is independently checksum-generated; DAT groups are source-derived with no physical telemetry acceptance. Its response checksums are computed sums; its native DATA/GET1 requests contain two spaces and CR/LF. GET replies are omitted. TX examples are documented read-only requests; never transmit an RX fixture to a battery.
+**All RX values are invented.** These are independent illustrations, not raw captures or one continuous charging-to-discharge recording. Legacy/ITSC trailer bytes and incoming BP100 CRC fields are unverified zero placeholders. PC8 PIN/reserved bytes are zeroed. iVolt CONT is independently checksum-generated. Ordinary charging/loaded-discharge DAT interpretations are hardware-corroborated through strict production-parser acceptance, not retained raw replay. All fixtures remain synthetic; full, negative temperature, FFFF, special 9900 and alternative decimal-zero branches remain source-derived only. Its response checksums are computed sums; its native DATA/GET1 requests contain two spaces and CR/LF. GET replies are omitted. TX examples are documented read-only requests; never transmit an RX fixture to a battery.
 
 ## Start every connection this way
 
@@ -65,12 +65,13 @@ def render(vectors, exchanges, profiles):
                       '```text', 'TX [' + request['id'] + ']: ' + request['hex'],
                       'ASCII TX: ' + repr(bytes.fromhex(request['hex']).decode('ascii')), 'RX: withheld password/settings reply; deliberately no raw example', '```']
             for phase, response_ids in session['stream'].items():
-                lines += ['', '### Source-derived ' + phase.replace('_', ' ') + ' illustrations', '',
-                          'No physical DAT telemetry acceptance. These groups are not individual DATA polls.']
+                lines += ['', '### Synthetic ' + phase.replace('_', ' ') + ' illustrations', '',
+                          'These invented groups illustrate hardware-corroborated ordinary telemetry or source-derived edge branches, not individual DATA polls.']
                 for response_id in response_ids:
                     response = responses[response_id]
                     lines += ['', '```text', 'RX [' + response_id + ']: ' + response['hex'],
                               'ASCII RX: ' + repr(bytes.fromhex(response['hex']).decode('ascii')), '```', '',
+                              'Evidence: `' + response['evidence'] + '`. All bytes and values are synthetic.', '',
                               'Selected decoded fields:', '', '```json', json.dumps(response['expected'], indent=2), '```']
             continue
         for phase, title in [('identity', 'Identification / initialization'), ('charging', 'Charging illustration'), ('discharging', 'Discharging illustration'), ('no_load', 'Input off, zero-load illustration')]:

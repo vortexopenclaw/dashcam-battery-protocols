@@ -2,7 +2,7 @@
 
 [vectors.json](vectors.json) contains individual machine-readable request/response fixtures. [exchanges.json](exchanges.json) connects them into model-specific initialization and charging/discharging sequences. This page shows those bytes with direction and decoded fields.
 
-**All RX values are invented.** These are independent illustrations, not raw captures or one continuous charging-to-discharge recording. Legacy/ITSC trailer bytes and incoming BP100 CRC fields are unverified zero placeholders. PC8 PIN/reserved bytes are zeroed. iVolt CONT is independently checksum-generated; DAT groups are source-derived with no physical telemetry acceptance. Its response checksums are computed sums; its native DATA/GET1 requests contain two spaces and CR/LF. GET replies are omitted. TX examples are documented read-only requests; never transmit an RX fixture to a battery.
+**All RX values are invented.** These are independent illustrations, not raw captures or one continuous charging-to-discharge recording. Legacy/ITSC trailer bytes and incoming BP100 CRC fields are unverified zero placeholders. PC8 PIN/reserved bytes are zeroed. iVolt CONT is independently checksum-generated. Ordinary charging/loaded-discharge DAT interpretations are hardware-corroborated through strict production-parser acceptance, not retained raw replay. All fixtures remain synthetic; full, negative temperature, FFFF, special 9900 and alternative decimal-zero branches remain source-derived only. Its response checksums are computed sums; its native DATA/GET1 requests contain two spaces and CR/LF. GET replies are omitted. TX examples are documented read-only requests; never transmit an RX fixture to a battery.
 
 ## Start every connection this way
 
@@ -23,7 +23,7 @@
 - Response: `0000fff1-0000-1000-8000-00805f9b34fb`
 - TX mode: write without response.
 
-CONT shape is hardware-observed; this control fixture is independently checksum-generated. DATA and GET1 literals and all DAT fields are native-app 1.1.7 source-derived. DAT telemetry is NOT physically accepted; firmware/model identity unknown. RX groups below illustrate a possible stream after the CONT-triggered DATA response, not one DATA poll per DAT frame or an established ACK sequence. Whether DATA alone suffices without GET1 is unverified. GET1 reads password/settings; no GET reply is included and raw GET/unknown traffic must be withheld before persistence.
+CONT and DATA-only startup without GET1 are hardware-corroborated. Ordinary DAT1-3 charging/loaded-discharge, positive temperature/current decoding and charging-mode unavailable output current are corroborated through strict production-parser acceptance, not independent raw replay; firmware/model identity unknown. All RX bytes and values here remain synthetic. Full, negative temperature, FFFF, special 9900 and alternative decimal-zero examples remain source-derived only. RX groups illustrate a continuing stream, not individual DATA polls or an established ACK sequence. Approximately five-second group cadence is observed, not a hard limit; old numeric values including input current/runtime may persist one cycle during transitions. GET1 is a native privacy-sensitive password/settings read, not needed or authorized by telemetry support; no GET reply is included. Withhold raw GET/unknown traffic before persistence. Calibration, complete protection/full behavior and other revisions remain unverified.
 
 ### Control-triggered read-only handshake
 
@@ -41,14 +41,16 @@ ASCII TX: 'S00,GET1,  E\r\n'
 RX: withheld password/settings reply; deliberately no raw example
 ```
 
-### Source-derived charging illustrations
+### Synthetic charging illustrations
 
-No physical DAT telemetry acceptance. These groups are not individual DATA polls.
+These invented groups illustrate hardware-corroborated ordinary telemetry or source-derived edge branches, not individual DATA polls.
 
 ```text
 RX [ivolt_charging_dat1]: 53 31 30 2C 44 41 54 31 2C 31 34 32 2C 31 33 38 2C 37 33 2C 33 37 45 0D 0A
 ASCII RX: 'S10,DAT1,142,138,73,37E\r\n'
 ```
+
+Evidence: `synthetic_illustration_of_hardware_corroborated_interpretation`. All bytes and values are synthetic.
 
 Selected decoded fields:
 
@@ -64,6 +66,8 @@ Selected decoded fields:
 RX [ivolt_charging_dat2]: 53 31 32 2C 44 41 54 32 2C 31 32 37 2C 31 2C 31 2C 36 32 30 30 2C 38 64 45 0D 0A
 ASCII RX: 'S12,DAT2,127,1,1,6200,8dE\r\n'
 ```
+
+Evidence: `synthetic_illustration_of_hardware_corroborated_interpretation`. All bytes and values are synthetic.
 
 Selected decoded fields:
 
@@ -84,6 +88,8 @@ RX [ivolt_charging_dat3]: 53 30 39 2C 44 41 54 33 2C 30 30 30 30 2C 30 2C 32 36 
 ASCII RX: 'S09,DAT3,0000,0,26,fcE\r\n'
 ```
 
+Evidence: `synthetic_illustration_of_hardware_corroborated_interpretation`. All bytes and values are synthetic.
+
 Selected decoded fields:
 
 ```json
@@ -96,14 +102,16 @@ Selected decoded fields:
 }
 ```
 
-### Source-derived discharging illustrations
+### Synthetic discharging illustrations
 
-No physical DAT telemetry acceptance. These groups are not individual DATA polls.
+These invented groups illustrate hardware-corroborated ordinary telemetry or source-derived edge branches, not individual DATA polls.
 
 ```text
 RX [ivolt_discharge_dat1]: 53 30 38 2C 44 41 54 31 2C 30 2C 31 33 31 2C 36 31 2C 63 64 45 0D 0A
 ASCII RX: 'S08,DAT1,0,131,61,cdE\r\n'
 ```
+
+Evidence: `synthetic_illustration_of_hardware_corroborated_interpretation`. All bytes and values are synthetic.
 
 Selected decoded fields:
 
@@ -119,6 +127,8 @@ Selected decoded fields:
 RX [ivolt_discharge_dat2]: 53 30 39 2C 44 41 54 32 2C 31 32 34 2C 33 2C 30 2C 30 2C 66 39 45 0D 0A
 ASCII RX: 'S09,DAT2,124,3,0,0,f9E\r\n'
 ```
+
+Evidence: `synthetic_illustration_of_hardware_corroborated_interpretation`. All bytes and values are synthetic.
 
 Selected decoded fields:
 
@@ -139,6 +149,8 @@ RX [ivolt_discharge_dat3]: 53 30 39 2C 44 41 54 33 2C 36 34 30 2C 34 31 35 2C 30
 ASCII RX: 'S09,DAT3,640,415,0,08E\r\n'
 ```
 
+Evidence: `synthetic_illustration_of_hardware_corroborated_interpretation`. All bytes and values are synthetic.
+
 Selected decoded fields:
 
 ```json
@@ -151,14 +163,16 @@ Selected decoded fields:
 }
 ```
 
-### Source-derived edge cases illustrations
+### Synthetic edge cases illustrations
 
-No physical DAT telemetry acceptance. These groups are not individual DATA polls.
+These invented groups illustrate hardware-corroborated ordinary telemetry or source-derived edge branches, not individual DATA polls.
 
 ```text
 RX [ivolt_unsupported_dat3]: 53 31 31 2C 44 41 54 33 2C 46 46 46 46 2C 36 30 30 30 2C 30 2C 61 62 45 0D 0A
 ASCII RX: 'S11,DAT3,FFFF,6000,0,abE\r\n'
 ```
+
+Evidence: `synthetic_source_derived_branch_not_hardware_observed`. All bytes and values are synthetic.
 
 Selected decoded fields:
 
@@ -177,6 +191,8 @@ RX [ivolt_special_dat3]: 53 31 30 2C 44 41 54 33 2C 39 39 30 30 2C 34 31 35 2C 3
 ASCII RX: 'S10,DAT3,9900,415,0,38E\r\n'
 ```
 
+Evidence: `synthetic_source_derived_branch_not_hardware_observed`. All bytes and values are synthetic.
+
 Selected decoded fields:
 
 ```json
@@ -193,6 +209,8 @@ Selected decoded fields:
 RX [ivolt_negative_standby_dat2]: 53 30 37 2C 44 41 54 32 2C 37 2C 30 2C 30 2C 30 2C 39 34 45 0D 0A
 ASCII RX: 'S07,DAT2,7,0,0,0,94E\r\n'
 ```
+
+Evidence: `synthetic_source_derived_branch_not_hardware_observed`. All bytes and values are synthetic.
 
 Selected decoded fields:
 
@@ -213,6 +231,8 @@ RX [ivolt_full_dat2]: 53 30 39 2C 44 41 54 32 2C 31 30 30 2C 32 2C 31 2C 30 2C 6
 ASCII RX: 'S09,DAT2,100,2,1,0,f3E\r\n'
 ```
 
+Evidence: `synthetic_source_derived_branch_not_hardware_observed`. All bytes and values are synthetic.
+
 Selected decoded fields:
 
 ```json
@@ -232,6 +252,8 @@ RX [ivolt_special_input_dat2]: 53 31 32 2C 44 41 54 32 2C 31 32 31 2C 31 2C 31 2
 ASCII RX: 'S12,DAT2,121,1,1,9900,91E\r\n'
 ```
 
+Evidence: `synthetic_source_derived_branch_not_hardware_observed`. All bytes and values are synthetic.
+
 Selected decoded fields:
 
 ```json
@@ -250,6 +272,8 @@ Selected decoded fields:
 RX [ivolt_decimal_zero_dat3]: 53 30 35 2C 44 41 54 33 2C 30 2C 30 2C 30 2C 33 30 45 0D 0A
 ASCII RX: 'S05,DAT3,0,0,0,30E\r\n'
 ```
+
+Evidence: `synthetic_source_derived_branch_not_hardware_observed`. All bytes and values are synthetic.
 
 Selected decoded fields:
 

@@ -1,6 +1,6 @@
 # Thinkware iVolt XTRA / BAB-95
 
-Status: **hardware-observed GATT transport and CONT controls; source-derived telemetry protocol, not physical telemetry acceptance**. DAT field groups and the read-only handshake below come from offline review of THINKWARE iVolt Android **1.1.7**, package `com.thinkware.ivolt`. Battery firmware and returned model identity remain unknown. iVolt Mini / BAB950 is excluded.
+Status: **hardware-corroborated charging and loaded-discharge telemetry, DAT1/DAT2/DAT3 and DATA-only startup**. DAT field groups and the read-only handshake below come from offline review of THINKWARE iVolt Android **1.1.7**, package `com.thinkware.ivolt`. Battery firmware and returned model identity remain unknown. iVolt Mini / BAB950 is excluded.
 
 ## Evidence and provenance
 
@@ -8,7 +8,15 @@ The [official app compatibility guide](https://support.thinkware.com/hc/en-us/ar
 
 Protocol facts are independently described from the compatible native app's transport, receive/parser and display paths. The inspected base APK SHA256 is `c3e87c1380f8463aa4e68d3048b58bb3cc5f59fa0a65938c077ea71ed8191461`; it was privately obtained from a third-party mirror, not directly from Play. Artifact hash/signature checks do not independently establish a manufacturer delivery chain. No APK, manufacturer source, private capture or owner identifier is redistributed. See [sources](sources.md#thinkware-ivolt-xtra).
 
-Physical evidence establishes the transport and checksum-valid CONT notifications only. There is no physical DAT1/DAT2/DAT3 measurement acceptance yet. Synthetic examples test the source-derived interpretation, not firmware support, calibration or native-app equivalence.
+Hardware evidence corroborates these protocol behaviors:
+
+- FFF1/FFF2 transport, CONT handling and DATA-only startup without GET1.
+- Continuing DAT1/DAT2/DAT3 groups, charging state 1 and loaded-discharge state 3, with transitions in both directions.
+- SOC, voltage and ordinary current decoding, positive temperature and device-reported minute estimates.
+- Charging-mode zero output-current sentinel interpreted as unavailable output current/power, not zero attached-load consumption.
+- Strict production-parser acceptance of CONT and DAT responses, including its length, field and additive-checksum checks.
+
+This corroborates the source-derived map through production decoder records. Raw reply bytes were not retained, so there is no independent raw-packet checksum replay or calibration claim. Firmware and returned model identity remain unknown; this is not support for every revision. All public examples remain synthetic, not published hardware packets or native-app equivalence tests.
 
 ## Discovery and transport
 
@@ -18,7 +26,7 @@ Short UUIDs expand to `0000xxxx-0000-1000-8000-00805f9b34fb`.
 
 | Service | Characteristic | Observed properties | Reviewed use |
 | --- | --- | --- | --- |
-| `FFF0` | `FFF1` | Read + notify (`0x12`) | Native ASCII response notifications, including observed CONT |
+| `FFF0` | `FFF1` | Read + notify (`0x12`) | Native ASCII response notifications, including corroborated CONT and DAT1-3 |
 | `FFF0` | `FFF2` | Write without response (`0x04`) | Native DATA and GET1 requests |
 | `FF12` | `FF01` | Write without response (`0x04`) | Not the reviewed native telemetry writer; semantics unknown |
 | `FF12` | `FF02` | Notify (`0x10`) | Not the reviewed native telemetry reader; semantics unknown |
@@ -37,7 +45,7 @@ S00,DATA,  E\r\n
 ```
 
 4. Await actual DAT groups. The native app's CONT branch calls its verification helper and sends DATA even if that helper marked a checksum mismatch. A new client should instead require a valid CONT before replying, serialize writes, bound retries and avoid an unbounded write for every duplicate control.
-5. Preserve DATA acknowledgement/control separately from DAT1/DAT2/DAT3 measurements. No established ACK payload or polling interval is specified here. Continued CONT without DAT is not telemetry readiness. Whether DATA alone starts telemetry without GET1 is **hardware-unverified**.
+5. Preserve DATA acknowledgement/control separately from DAT1/DAT2/DAT3 measurements. DATA-only startup and continuing DAT groups without GET1 are hardware-corroborated. Group cadence of approximately five seconds was observed, not a hard interval, timeout or retry limit. No established ACK payload or periodic polling recipe is specified here. Continued CONT without DAT is not telemetry readiness.
 
 This is a read-only protocol request carried by a GATT write, not permission to configure the battery. Do not send PowerCell 8 `@@` or BlackVue `43 06` queries just because UUIDs overlap. OEM/common-firmware attribution remains unknown.
 
@@ -63,7 +71,7 @@ Snn,COMMAND,fields,hhE\r\n
 
 - `S` is ASCII `53`; `nn` is two **decimal** digits. The reviewed native parser accepts lengths `00` through `29`.
 - `COMMAND` is four ASCII characters, specifically DAT1, DAT2 or DAT3 for the mapped groups. Do not use substring command matching.
-- `fields` is comma-separated ASCII field text. `nn` is its byte length including internal commas, excluding the comma immediately before `hh`. This follows the native length arithmetic; physical DAT traffic has not confirmed it.
+- `fields` is comma-separated ASCII field text. `nn` is its byte length including internal commas, excluding the comma immediately before `hh`. This follows the native length arithmetic and is corroborated by strict production-parser DAT acceptance, not independent raw replay.
 - All ordinary mapped fields are decimal integers, not hexadecimal, except the exact output-current sentinel text `FFFF`. Preserve the exact text distinction for `0000`.
 - `hh` is the two-digit **lowercase ASCII hexadecimal** encoding of the sum modulo 256 of every prefix byte through the comma immediately before `hh`. Include `S`, the length digits, command and commas. Exclude `hh`, `E`, CR and LF. This is an additive checksum, not a polynomial CRC.
 - Native ordinary verification window is `nn + 13` bytes, ending in `E`, excluding CR/LF. The full wire frame is `nn + 15` bytes.
@@ -84,9 +92,9 @@ The reviewed checksum helper sets a shared flag false on mismatch. DAT setters t
 
 Accumulate fragments and preserve coalesced leftovers. BLE callback boundaries are not frame boundaries. Bound memory and resynchronize at a validated header; do not copy the native fixed-buffer/discard behavior. Require CR/LF for these public fixtures while recognizing that the native verification window itself excludes them. Reset partial frames, readiness and freshness on reconnect.
 
-## Source-derived measurement groups
+## Measurement groups and hardware scope
 
-Field positions below start after `COMMAND`; native comma-split indices are 2 onward. These are not an atomic snapshot.
+Field positions below start after `COMMAND`; native comma-split indices are 2 onward. The native map is corroborated for ordinary charging/loaded-discharge telemetry, not every branch. These are not an atomic snapshot.
 
 | Command | Fields in order | Interpretation |
 | --- | --- | --- |
@@ -103,27 +111,28 @@ Source-derived native presentation:
 | Raw state | Native presentation |
 | --- | --- |
 | 0 | Standby |
-| 1 | Charging; charge-time estimate displayed |
-| 2 | Charge/full presentation |
-| 3 | Discharging; discharge-time estimate displayed |
+| 1 | Charging; charge-time estimate displayed; hardware-corroborated |
+| 2 | Charge/full presentation; source-derived only |
+| 3 | Discharging; discharge-time estimate displayed; loaded discharge hardware-corroborated |
 
-These are not complete protection/fault semantics. Preserve unknown raw states without inventing labels. Encoded temperature `t >= 100` displays positive `t % 100` degrees C; `t < 100` displays negative `t` degrees C. This negative branch is source-derived, not physically corroborated. Do not substitute another family's temperature formula.
+These are not complete protection/fault semantics. Preserve unknown raw states without inventing labels. Encoded temperature `t >= 100` displays positive `t % 100` degrees C; positive temperature is hardware-corroborated, not independently calibrated; `t < 100` displays negative `t` degrees C. This negative branch is source-derived, not physically corroborated. Do not substitute another family's temperature formula.
 
 ### Current availability and presentation
 
 - DAT3 output-current text exactly `0000` or `FFFF` makes native supported-device false and stores output current zero. Preserve the raw sentinel and mark output current/power **unavailable**, not a measured zero load. Do not automatically interpret every differently spelled decimal zero as the same sentinel.
-- Ordinary input/output currents are mA. Native display uses integer mA below 1000 and truncates to one decimal A at/above 1000. Keep numerical precision in a decoder; presentation rounding is not protocol scaling.
-- The shared native current formatter treats raw **9900** specially as **13 A**, not 9.9 A. Its meaning is unresolved. Preserve raw 9900 and flag it as special/unresolved instead of publishing 9.9 A or a calibrated 13 A measurement. This formatter can affect either current display.
+- The charging-mode zero/unavailable output-current behavior is hardware-corroborated through production decoding. Exact sentinel-text semantics come from source review; `FFFF` remains source-derived only without retained raw replay.
+- Ordinary input/output currents are mA and are hardware-corroborated in charging/loaded discharge, not independently calibrated. Native display uses integer mA below 1000 and truncates to one decimal A at/above 1000. Keep numerical precision in a decoder; presentation rounding is not protocol scaling.
+- The shared native current formatter treats raw **9900** specially as **13 A**, not 9.9 A. Its meaning is unresolved and this branch remains source-derived, not hardware-observed. Preserve raw 9900 and flag it as special/unresolved instead of publishing 9.9 A or a calibrated 13 A measurement. This formatter can affect either current display.
 - Calculate watts only from available, ordinary voltage/current fields with compatible freshness. Label `V × A` as calculated; do not calculate with sentinels or unresolved 9900.
 
 ### Time, smoothing and freshness
 
 Charge and discharge values are minute estimates, not observed parking duration. Native discharge presentation caps at 99:59; preserve larger raw minute values rather than treating this UI cap as a protocol limit. SOC and each time array accept the first value, then sort batches of 12 and use index 6 before clearing and repeating. This upper-middle batch selection is native display smoothing, not wire scaling or an average of the two middle values.
 
-A client may expose unsmoothed values with timestamps. Timestamp DAT1, DAT2 and DAT3 independently; a fresh DAT1 cannot refresh an old current, state or runtime. CONT, DATA acknowledgement, GET, PRC and unknown traffic must not refresh measurement timestamps. On timeout/disconnect keep historical values explicitly stale, not live. Do not infer depletion, camera shutdown, health or expansion capacity from gaps or zero estimates.
+State transitions can retain old numeric values for one group cycle, including input current and runtime. Do not treat a new state as an atomic refresh of all fields or a lingering input current as definitive charging activity. A client may expose unsmoothed values with timestamps. Timestamp DAT1, DAT2 and DAT3 independently; a fresh DAT1 cannot refresh an old current, state or runtime. CONT, DATA acknowledgement, GET, PRC and unknown traffic must not refresh measurement timestamps. On timeout/disconnect keep historical values explicitly stale, not live. Do not infer depletion, camera shutdown, health or expansion capacity from gaps or zero estimates.
 
 ## Examples, tests and remaining limits
 
-[Machine-readable vectors](../examples/vectors.json), [exchange sequences](../examples/exchanges.json) and the [generated guide](../examples/communication.md) contain independently constructed ASCII requests/control and invented DAT groups. Every iVolt measurement is labeled source-derived/not physically accepted. GET replies are omitted. The strict offline validator and stream tests exercise checksum/length/units, fragmentation/coalescing, privacy withholding and sentinel distinctions; they do not establish a working radio session.
+[Machine-readable vectors](../examples/vectors.json), [exchange sequences](../examples/exchanges.json) and the [generated guide](../examples/communication.md) contain independently constructed ASCII requests/control and invented DAT groups. Ordinary charging/loaded-discharge examples illustrate hardware-corroborated interpretations with invented values; they are not physically captured packets. Full, negative temperature, FFFF, special 9900 and alternative decimal-zero examples remain source-derived only. GET replies are omitted. The strict offline validator and stream tests exercise checksum/length/units, fragmentation/coalescing, privacy withholding and sentinel distinctions; they do not establish a working radio session.
 
-Remaining unknowns: battery firmware/model identity, authentication requirements, DATA-only startup sufficiency, physical DAT layout/accuracy/checksum compatibility, polling/retry limits, complete ACK/PRC/settings semantics, special 9900 meaning and other iVolt revisions. No borrowed PC8 packets, manufacturer implementation, private logs or owner identifiers are included. See the [profile](../profiles/ivolt-xtra.json) and [implementation guidance](methodology.md).
+Remaining unknowns: battery firmware/model identity, wider authentication requirements, independent raw DAT/checksum replay, measurement and usable-capacity calibration, polling/retry limits, complete protection/fault/full behavior, complete ACK/PRC/settings semantics, negative temperature, FFFF, special 9900 meaning and other iVolt revisions. DATA-only acceptance does not authorize GET1 or settings writes. No borrowed PC8 packets, manufacturer implementation, private logs or owner identifiers are included. See the [profile](../profiles/ivolt-xtra.json) and [implementation guidance](methodology.md).

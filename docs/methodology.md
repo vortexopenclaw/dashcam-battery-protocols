@@ -2,7 +2,7 @@
 
 ## Evidence levels
 
-1. **Hardware-observed:** a selected battery returned the documented bytes or GATT metadata. A firmware/model check and parser replay establish which device/revision supplied telemetry.
+1. **Hardware-observed or hardware-corroborated:** a selected battery supplied documented GATT metadata, raw replies or accepted production-decoder measurements. State the evidence path precisely. Retained raw bytes permit independent parser/checksum replay; decoder acceptance without retained bytes does not. Known firmware/model checks scope revision support; unknown identity must stay unknown rather than becoming an invented tested revision. iVolt ordinary charging/loaded-discharge DAT support is hardware-corroborated through strict production-parser acceptance with unknown firmware/model identity.
 2. **Manufacturer-derived:** offline analysis of a named manufacturer-app version establishes a field or branch. It does not prove that every supported model uses that branch in the field.
 3. **Upstream-source-derived:** a cited, commit-pinned project describes the behavior. Retain the upstream project's tested-model limits.
 4. **Synthetic fixture:** invented bytes exercise the documented map. They establish example consistency, not a real measurement, checksum or model capability.
@@ -20,7 +20,7 @@ Calculate power as volts × amps and distinguish reported capacity from measured
 
 ## Transport and runtime
 
-Follow the [annotated communication examples](../examples/communication.md) for per-model GATT setup, identity queries and charging/discharging replies. The corresponding [exchange JSON](../examples/exchanges.json) references [packet fixtures](../examples/vectors.json), so examples can drive a client simulator without using private device captures. Charging examples do not upgrade source-derived states to hardware-observed support.
+Follow the [annotated communication examples](../examples/communication.md) for per-model GATT setup, identity queries and charging/discharging replies. The corresponding [exchange JSON](../examples/exchanges.json) references [packet fixtures](../examples/vectors.json), so examples can drive a client simulator without using private device captures. Synthetic charging examples do not establish hardware support. Separate hardware evidence now corroborates iVolt DATA-only startup, ordinary charging/loaded-discharge DAT1-3, positive temperature/current decoding and charging-mode unavailable output current. Full/negative/FFFF/special 9900 branches remain source-derived. Approximate five-second group cadence is an observation, not a hard limit; old input-current/runtime values can persist one cycle during state transitions. This evidence neither calibrates capacity nor authorizes GET1/settings writes.
 
 Subscribe before polling; respect actual GATT properties; serialize client operations; verify expected frame length before decoding. Reset stream state on reconnection. A header can occur inside a payload, so consume a complete length-delimited frame rather than splitting on every header occurrence.
 

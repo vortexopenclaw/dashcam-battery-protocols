@@ -112,21 +112,70 @@ class IvoltTests(unittest.TestCase):
         for row in selected:
             self.assertEqual(bytes.fromhex(row['hex']), ('S00,' + row['command'] + ',  E\r\n').encode('ascii'))
 
-    def test_coverage_and_privacy_cannot_be_promoted(self):
+    def test_qualified_hardware_support_and_privacy(self):
+        import verify
+        from copy import deepcopy
+        profile = json.loads((ROOT / 'profiles/ivolt-xtra.json').read_text())
+        # Accepted hardware telemetry does not require an imaginary firmware version.
+        verify.validate_ivolt_profile(profile)
+        self.assertTrue(profile['physical_telemetry_accepted'])
+        self.assertEqual(profile['tested_firmware'], [])
+        changes = [('coverage', 'source_derived_telemetry_observed_controls'),
+                   ('tested_firmware', ['invented']), ('physical_telemetry_accepted', False),
+                   ('firmware_identity', 'invented'), ('hardware_evidence', ['gatt_transport']),
+                   ('capacity_semantics', 'configured_mah'), ('incoming_checksum', 'unverified'),
+                   ('checksum_evidence', 'independent_raw_replay'), ('support_qualification', {}),
+                   ('request_commands', ['DATA', 'SET1']), ('unknown_raw_replies', 'log_raw')]
+        for field, value in changes:
+            with self.subTest(field=field):
+                modified = dict(profile, **{field: value})
+                with self.assertRaises(ValueError):
+                    verify.validate_ivolt_profile(modified)
+        # Every qualification is mandatory, including source-only edge branches.
+        for field in profile['support_qualification']:
+            modified = deepcopy(profile)
+            del modified['support_qualification'][field]
+            with self.subTest(missing_qualification=field), self.assertRaises(ValueError):
+                verify.validate_ivolt_profile(modified)
+        for field, value in [('independent_raw_replay', True), ('measurement_calibration', True),
+                             ('source_only_branches', []), ('returned_model_identity', 'BAB-95')]:
+            modified = deepcopy(profile)
+            modified['support_qualification'][field] = value
+            with self.subTest(unqualified_claim=field), self.assertRaises(ValueError):
+                verify.validate_ivolt_profile(modified)
+
+    def test_source_only_examples_cannot_be_promoted(self):
         import verify
         from unittest.mock import patch
-        target = ROOT / 'profiles/ivolt-xtra.json'
+        target = ROOT / 'examples/vectors.json'
         original_read = Path.read_text
-        profile = json.loads(original_read(target))
-        changes = [('coverage', 'hardware_telemetry'), ('tested_firmware', ['invented']),
-                   ('physical_telemetry_accepted', True), ('capacity_semantics', 'configured_mah'),
-                   ('incoming_checksum', 'unverified'), ('request_commands', ['DATA', 'SET1']),
-                   ('unknown_raw_replies', 'log_raw')]
-        for field, value in changes:
-            modified = dict(profile, **{field: value})
+        vectors = json.loads(original_read(target))
+        for row in vectors['responses']:
+            if row.get('evidence') != 'synthetic_source_derived_branch_not_hardware_observed':
+                continue
+            evidence = row['evidence']
+            row['evidence'] = 'synthetic_illustration_of_hardware_corroborated_interpretation'
             def read(path, *args, **kwargs):
-                return json.dumps(modified) if path == target else original_read(path, *args, **kwargs)
-            with patch.object(Path, 'read_text', read), self.assertRaises(ValueError):
+                return json.dumps(vectors) if path == target else original_read(path, *args, **kwargs)
+            with self.subTest(example=row['id']), patch.object(Path, 'read_text', read), self.assertRaises(ValueError):
+                verify.main()
+            row['evidence'] = evidence
+
+    def test_exchange_qualification_cannot_be_removed(self):
+        import verify
+        from unittest.mock import patch
+        target = ROOT / 'examples/exchanges.json'
+        original_read = Path.read_text
+        exchanges = json.loads(original_read(target))
+        session = next(row for row in exchanges['sessions'] if row['profile'] == 'ivolt-xtra')
+        original_notes = session['notes']
+        for boundary in ('not independent raw replay', 'firmware/model identity unknown',
+                         'remain synthetic', 'source-derived only', 'not a hard limit',
+                         'may persist one cycle', 'not needed or authorized'):
+            session['notes'] = original_notes.replace(boundary, '')
+            def read(path, *args, **kwargs):
+                return json.dumps(exchanges) if path == target else original_read(path, *args, **kwargs)
+            with self.subTest(boundary=boundary), patch.object(Path, 'read_text', read), self.assertRaises(ValueError):
                 verify.main()
 
     def test_control_cannot_refresh_a_measurement(self):

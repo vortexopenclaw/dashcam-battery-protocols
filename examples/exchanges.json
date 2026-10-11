@@ -36,7 +36,7 @@
         ]
       },
       "private_read_request": "ivolt_get1",
-      "notes": "CONT shape is hardware-observed; this control fixture is independently checksum-generated. DATA and GET1 literals and all DAT fields are native-app 1.1.7 source-derived. DAT telemetry is NOT physically accepted; firmware/model identity unknown. RX groups below illustrate a possible stream after the CONT-triggered DATA response, not one DATA poll per DAT frame or an established ACK sequence. Whether DATA alone suffices without GET1 is unverified. GET1 reads password/settings; no GET reply is included and raw GET/unknown traffic must be withheld before persistence."
+      "notes": "CONT and DATA-only startup without GET1 are hardware-corroborated. Ordinary DAT1-3 charging/loaded-discharge, positive temperature/current decoding and charging-mode unavailable output current are corroborated through strict production-parser acceptance, not independent raw replay; firmware/model identity unknown. All RX bytes and values here remain synthetic. Full, negative temperature, FFFF, special 9900 and alternative decimal-zero examples remain source-derived only. RX groups illustrate a continuing stream, not individual DATA polls or an established ACK sequence. Approximately five-second group cadence is observed, not a hard limit; old numeric values including input current/runtime may persist one cycle during transitions. GET1 is a native privacy-sensitive password/settings read, not needed or authorized by telemetry support; no GET reply is included. Withhold raw GET/unknown traffic before persistence. Calibration, complete protection/full behavior and other revisions remain unverified."
     },
     {
       "profile": "b124",
