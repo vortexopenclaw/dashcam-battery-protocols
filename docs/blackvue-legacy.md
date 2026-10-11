@@ -1,8 +1,8 @@
-# BlackVue B-124 / B-130A wire protocol
+# BlackVue B-124 / B-130A / B-130X wire protocol
 
 The [Cellink Neo](cellink-neo6.md) firmware 1.52 also uses this transport and classic map. Its own identity/firmware gate and evidence limits remain separate from BlackVue variants.
 
-Evidence: manufacturer-implementation analysis plus hardware observations on B-124 firmware 1.44 and B-130A firmware 1.61. Firmware branches outside those two revisions are source-derived, not hardware-tested here. See [sources](sources.md) and [methodology](methodology.md).
+Evidence: manufacturer-implementation analysis plus hardware observations on B-124 firmware 1.44, B-130A firmware 1.61 and separately identified B-130X firmware 1.61. B-130X charging, loaded discharge and input-off/no-load behavior have been observed independently. B-124X and other firmware branches remain source-derived, not hardware-tested here. See [sources](sources.md) and [methodology](methodology.md).
 
 ## GATT transport
 
@@ -44,6 +44,7 @@ Incoming trailer/checksum semantics are **unverified**. Observed connection-read
 | `52` | 17 bytes, payload length 12 | Firmware/model identity |
 | `51`, B-124 1.44 | 23 bytes, payload length 18 | Classic status |
 | `51`, B-130A 1.61 | 29 bytes, payload length 24 | Extended status |
+| `51`, B-130X 1.61 | 29 bytes, payload length 24 | Extended status |
 
 Those lengths apply to the named firmware revisions, not every variant. Repeated `71` messages indicate connection readiness, not a status reply.
 
@@ -56,7 +57,7 @@ Offsets are zero-based from the start of the complete frame. Multi-byte integers
 | 4 | 2 | Firmware revision | `144` → `1.44`; `161` → `1.61` |
 | 10 | 6 | Model | ASCII, trim trailing NUL/space |
 
-Observed model strings are `B-124` and `B-130A`. Manufacturer-source identity handling also includes `B-124X` and `B-130X`; those are not separate hardware-tested models in this dataset. Do not substitute `B-130X` for an observed `B-130A` identity.
+Observed model strings are `B-124`, `B-130A` and separately identified `B-130X`. Manufacturer-source identity handling also includes `B-124X`, which remains source-derived. Do not substitute `B-130X` for an observed `B-130A` identity or infer settings compatibility from their shared status layout.
 
 ## Status reply (`51`)
 
@@ -98,17 +99,17 @@ The tested positive temperatures corroborate the first branch. Other temperature
 
 | Low nibble | Working interpretation | Evidence |
 |---|---|---|
-| 0 | Stopped / transition | Observed during B-130A charging-to-discharge transition |
-| 1 | Charging | Observed on both models with positive input current |
+| 0 | Stopped / transition | B-130A transition observed; B-130X input-off/no-load separately observed |
+| 1 | Charging | Observed on all three BlackVue models with positive input current |
 | 2 | Fully charged, unless input is active | Manufacturer-derived; not a full-charge hardware acceptance here |
-| 3 | Discharging | Observed on both models |
+| 3 | Discharging | Loaded discharge observed on all three BlackVue models |
 | Other | Preserve raw code; unknown/protection-related | No complete hardware-validated mapping |
 
-The manufacturer UI interprets state 2 with positive input current or voltage as charging. Extended-firmware protection interpretation can depend on input voltage; do not collapse every remaining nibble into a known alarm. Keep raw bits available for future evidence.
+The manufacturer UI interprets state 2 with positive input current or voltage as charging. B-130X state 0 can retain reported output voltage with zero current; it does not establish that the output is electrically disabled. B-130A's transitional state 0 is not confirmed no-load evidence. Extended-firmware protection interpretation can depend on input voltage; do not collapse every remaining nibble into a known alarm. Keep raw bits available for future evidence.
 
 ## Units and estimates
 
-Some manufacturer screens label current `Ah`; the implementation scales these fields by 1000, yielding A. Power is calculated from voltage/current. The runtime field is the raw battery estimate, independent of manufacturer UI averaging. See the [B-124](b124.md) and [B-130A](b130a.md) model-specific layouts.
+Some manufacturer screens label current `Ah`; the implementation scales these fields by 1000, yielding A. Power is calculated from voltage/current. The runtime field is the raw battery estimate, independent of manufacturer UI averaging. See the [B-124](b124.md), [B-130A](b130a.md) and [B-130X](b130x.md) model-specific layouts.
 
 ## Configuration commands
 

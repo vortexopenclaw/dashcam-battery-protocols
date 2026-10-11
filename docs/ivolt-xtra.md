@@ -110,7 +110,7 @@ Source-derived native presentation:
 
 | Raw state | Native presentation |
 | --- | --- |
-| 0 | Standby |
+| 0 | Standby; initial standby state hardware-corroborated |
 | 1 | Charging; charge-time estimate displayed; hardware-corroborated |
 | 2 | Charge/full presentation; source-derived only |
 | 3 | Discharging; discharge-time estimate displayed; loaded discharge hardware-corroborated |

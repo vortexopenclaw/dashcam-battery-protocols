@@ -26,6 +26,7 @@
     "checksum_valid_CONT_controls",
     "DATA_only_startup_without_GET1",
     "DAT1_DAT2_DAT3_strict_production_parser_acceptance",
+    "initial_standby_state_0",
     "charging_state_1",
     "loaded_discharge_state_3",
     "positive_temperature",

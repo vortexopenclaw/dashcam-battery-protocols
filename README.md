@@ -36,7 +36,7 @@ Reported capacity is a configured or device-reported value, not measured usable 
 
 ## Scope
 
-The reference documents known identification, status and configuration protocols. Incomplete command layouts are marked unknown rather than inferred from another model. Discover actual GATT properties, subscribe before querying, and match returned identity/firmware before selecting a decoder. Configuration support and locked-setting masks can differ by model. Test-session readings and application-specific logging history are intentionally omitted.
+The reference documents known identification, status and configuration protocols. Incomplete command layouts are marked unknown rather than inferred from another model. Discover actual GATT properties, subscribe before querying, and match returned identity/firmware where available before selecting a decoder. Where identity is not established, follow the model page's transport and frame-validation gates rather than assuming another battery's protocol. Configuration support and locked-setting masks can differ by model. Test-session readings and application-specific logging history are intentionally omitted.
 
 ## Validate a contribution
 
