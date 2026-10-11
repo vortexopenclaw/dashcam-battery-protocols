@@ -2,17 +2,266 @@
 
 [vectors.json](vectors.json) contains individual machine-readable request/response fixtures. [exchanges.json](exchanges.json) connects them into model-specific initialization and charging/discharging sequences. This page shows those bytes with direction and decoded fields.
 
-**All RX values are invented.** These are independent illustrations, not raw captures or one continuous charging-to-discharge recording. Legacy/ITSC trailer bytes and incoming BP100 CRC fields are unverified zero placeholders. PC8 PIN/reserved bytes are zeroed. TX examples are documented identification/status queries; never transmit an RX fixture to a battery.
+**All RX values are invented.** These are independent illustrations, not raw captures or one continuous charging-to-discharge recording. Legacy/ITSC trailer bytes and incoming BP100 CRC fields are unverified zero placeholders. PC8 PIN/reserved bytes are zeroed. iVolt CONT is independently checksum-generated; DAT groups are source-derived with no physical telemetry acceptance. Its response checksums are computed sums; its native DATA/GET1 requests contain two spaces and CR/LF. GET replies are omitted. TX examples are documented read-only requests; never transmit an RX fixture to a battery.
 
 ## Start every connection this way
 
 1. Connect to the intended device and discover its actual service/characteristic properties. Advertised names and similar UUIDs are hints, not model/firmware verification.
 2. Enable notification delivery on the listed response characteristic. For its standard CCCD `00002902-0000-1000-8000-00805f9b34fb`, notification-enable value is `01 00`; if the discovered property is indications instead, use `02 00`. This is a GATT descriptor write, not a packet sent to the query writer. Await subscription completion before querying.
-3. Send the model's identification query and reassemble the reply. Verify the expected model/firmware or application mode before status queries. These query/reply steps are the initialization exchange, not proof that a separate pairing/authentication protocol is absent.
+3. For iVolt, follow the separate CONT-triggered DATA sequence below; no model/firmware identity query is established. For other models, send the model's identification query and reassemble the reply. Verify the expected model/firmware or application mode before status queries. These query/reply steps are the initialization exchange, not proof that a separate pairing/authentication protocol is absent.
 4. Serialize operations and match response command/shape. A write-without-response has no ATT acknowledgement; local write acceptance is not an application reply. Preserve timeouts and unknown replies rather than manufacturing telemetry. Do not repeatedly read a notify response stream as a substitute for subscribing.
-5. Repeat status queries conservatively. On disconnect discard partial frames, reconnect, subscribe and identify again. Independent groups need independent timestamps; old cached fields are not live measurements.
+5. Repeat established status queries conservatively; no periodic iVolt polling recipe is established here. On disconnect discard partial frames, reconnect and repeat the model-specific subscription/initialization gates. Independent groups need independent timestamps; old cached fields are not live measurements.
 
 `TX` means client to battery through the listed writer. `RX` means the reassembled battery-to-client notification/indication frame, not necessarily one radio notification. Decoded blocks show selected expected fields, with units in names (`_v`, `_a`, `_w`, `_min`, `_mah`, `_c`). Watts are volts × amps, not a separate measured-energy claim.
+
+## Thinkware iVolt XTRA / BAB-95, firmware unknown
+
+[Protocol reference](../docs/ivolt-xtra.md).
+
+- Service: `0000fff0-0000-1000-8000-00805f9b34fb`
+- Writer: `0000fff2-0000-1000-8000-00805f9b34fb`
+- Response: `0000fff1-0000-1000-8000-00805f9b34fb`
+- TX mode: write without response.
+
+CONT shape is hardware-observed; this control fixture is independently checksum-generated. DATA and GET1 literals and all DAT fields are native-app 1.1.7 source-derived. DAT telemetry is NOT physically accepted; firmware/model identity unknown. RX groups below illustrate a possible stream after the CONT-triggered DATA response, not one DATA poll per DAT frame or an established ACK sequence. Whether DATA alone suffices without GET1 is unverified. GET1 reads password/settings; no GET reply is included and raw GET/unknown traffic must be withheld before persistence.
+
+### Control-triggered read-only handshake
+
+```text
+RX [ivolt_cont]: 53 30 30 2C 43 4F 4E 54 2C 33 66 45 0D 0A
+TX [ivolt_data]: 53 30 30 2C 44 41 54 41 2C 20 20 45 0D 0A
+ASCII TX: 'S00,DATA,  E\r\n'
+```
+
+### Native privacy-sensitive read, not a measurement query
+
+```text
+TX [ivolt_get1]: 53 30 30 2C 47 45 54 31 2C 20 20 45 0D 0A
+ASCII TX: 'S00,GET1,  E\r\n'
+RX: withheld password/settings reply; deliberately no raw example
+```
+
+### Source-derived charging illustrations
+
+No physical DAT telemetry acceptance. These groups are not individual DATA polls.
+
+```text
+RX [ivolt_charging_dat1]: 53 31 30 2C 44 41 54 31 2C 31 34 32 2C 31 33 38 2C 37 33 2C 33 37 45 0D 0A
+ASCII RX: 'S10,DAT1,142,138,73,37E\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "input_v": 14.2,
+  "output_v": 13.8,
+  "charge_percent": 73
+}
+```
+
+```text
+RX [ivolt_charging_dat2]: 53 31 32 2C 44 41 54 32 2C 31 32 37 2C 31 2C 31 2C 36 32 30 30 2C 38 64 45 0D 0A
+ASCII RX: 'S12,DAT2,127,1,1,6200,8dE\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "temperature_raw": 127,
+  "temperature_c": 27,
+  "state_code": 1,
+  "acc_raw": 1,
+  "input_current_raw": 6200,
+  "input_current_available": true,
+  "input_a": 6.2
+}
+```
+
+```text
+RX [ivolt_charging_dat3]: 53 30 39 2C 44 41 54 33 2C 30 30 30 30 2C 30 2C 32 36 2C 66 63 45 0D 0A
+ASCII RX: 'S09,DAT3,0000,0,26,fcE\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "output_current_raw_text": "0000",
+  "runtime_estimate_min": 0,
+  "time_to_full_min": 26,
+  "output_current_available": false,
+  "output_current_sentinel": "0000"
+}
+```
+
+### Source-derived discharging illustrations
+
+No physical DAT telemetry acceptance. These groups are not individual DATA polls.
+
+```text
+RX [ivolt_discharge_dat1]: 53 30 38 2C 44 41 54 31 2C 30 2C 31 33 31 2C 36 31 2C 63 64 45 0D 0A
+ASCII RX: 'S08,DAT1,0,131,61,cdE\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "input_v": 0.0,
+  "output_v": 13.1,
+  "charge_percent": 61
+}
+```
+
+```text
+RX [ivolt_discharge_dat2]: 53 30 39 2C 44 41 54 32 2C 31 32 34 2C 33 2C 30 2C 30 2C 66 39 45 0D 0A
+ASCII RX: 'S09,DAT2,124,3,0,0,f9E\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "temperature_raw": 124,
+  "temperature_c": 24,
+  "state_code": 3,
+  "acc_raw": 0,
+  "input_current_raw": 0,
+  "input_current_available": true,
+  "input_a": 0.0
+}
+```
+
+```text
+RX [ivolt_discharge_dat3]: 53 30 39 2C 44 41 54 33 2C 36 34 30 2C 34 31 35 2C 30 2C 30 38 45 0D 0A
+ASCII RX: 'S09,DAT3,640,415,0,08E\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "output_current_raw_text": "640",
+  "runtime_estimate_min": 415,
+  "time_to_full_min": 0,
+  "output_current_available": true,
+  "output_a": 0.64
+}
+```
+
+### Source-derived edge cases illustrations
+
+No physical DAT telemetry acceptance. These groups are not individual DATA polls.
+
+```text
+RX [ivolt_unsupported_dat3]: 53 31 31 2C 44 41 54 33 2C 46 46 46 46 2C 36 30 30 30 2C 30 2C 61 62 45 0D 0A
+ASCII RX: 'S11,DAT3,FFFF,6000,0,abE\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "output_current_raw_text": "FFFF",
+  "runtime_estimate_min": 6000,
+  "time_to_full_min": 0,
+  "output_current_available": false,
+  "output_current_sentinel": "FFFF"
+}
+```
+
+```text
+RX [ivolt_special_dat3]: 53 31 30 2C 44 41 54 33 2C 39 39 30 30 2C 34 31 35 2C 30 2C 33 38 45 0D 0A
+ASCII RX: 'S10,DAT3,9900,415,0,38E\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "output_current_raw_text": "9900",
+  "runtime_estimate_min": 415,
+  "time_to_full_min": 0,
+  "output_current_available": false,
+  "output_current_special": "9900_unresolved_native_13A_display"
+}
+```
+
+```text
+RX [ivolt_negative_standby_dat2]: 53 30 37 2C 44 41 54 32 2C 37 2C 30 2C 30 2C 30 2C 39 34 45 0D 0A
+ASCII RX: 'S07,DAT2,7,0,0,0,94E\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "temperature_raw": 7,
+  "temperature_c": -7,
+  "state_code": 0,
+  "acc_raw": 0,
+  "input_current_raw": 0,
+  "input_current_available": true,
+  "input_a": 0.0
+}
+```
+
+```text
+RX [ivolt_full_dat2]: 53 30 39 2C 44 41 54 32 2C 31 30 30 2C 32 2C 31 2C 30 2C 66 33 45 0D 0A
+ASCII RX: 'S09,DAT2,100,2,1,0,f3E\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "temperature_raw": 100,
+  "temperature_c": 0,
+  "state_code": 2,
+  "acc_raw": 1,
+  "input_current_raw": 0,
+  "input_current_available": true,
+  "input_a": 0.0
+}
+```
+
+```text
+RX [ivolt_special_input_dat2]: 53 31 32 2C 44 41 54 32 2C 31 32 31 2C 31 2C 31 2C 39 39 30 30 2C 39 31 45 0D 0A
+ASCII RX: 'S12,DAT2,121,1,1,9900,91E\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "temperature_raw": 121,
+  "temperature_c": 21,
+  "state_code": 1,
+  "acc_raw": 1,
+  "input_current_raw": 9900,
+  "input_current_available": false,
+  "input_current_special": "9900_unresolved_native_13A_display"
+}
+```
+
+```text
+RX [ivolt_decimal_zero_dat3]: 53 30 35 2C 44 41 54 33 2C 30 2C 30 2C 30 2C 33 30 45 0D 0A
+ASCII RX: 'S05,DAT3,0,0,0,30E\r\n'
+```
+
+Selected decoded fields:
+
+```json
+{
+  "output_current_raw_text": "0",
+  "runtime_estimate_min": 0,
+  "time_to_full_min": 0,
+  "output_current_available": true,
+  "output_a": 0.0
+}
+```
 
 ## BlackVue B-124, firmware 1.44
 
@@ -722,11 +971,11 @@ Notification 2: 51 B8 00 00 00 0E 80
 Notification 3: 8A 8A 8A 00 23 28 02 08 31 38 01 00 00
 ```
 
-Accumulate bytes before interpreting fields. If two complete replies arrive in one callback, consume the first complete frame and continue with the remainder; do not split at every apparent header inside a payload. Legacy length is byte 2 + 5; BP100 length is LE16 at 4 + 12; standard PC8 length is byte 4 + 7, ending in `0A 0D`. BI word 32 is 17 bytes; words 33-35 are 16 bytes. Reset the buffer and identity gate on reconnect.
+Accumulate bytes before interpreting fields. If two complete replies arrive in one callback, consume the first complete frame and continue with the remainder; do not split at every apparent header inside a payload. Legacy length is byte 2 + 5; BP100 length is LE16 at 4 + 12; standard PC8 length is byte 4 + 7, ending in `0A 0D`. BI word 32 is 17 bytes; words 33-35 are 16 bytes. iVolt ordinary wire length is decimal nn + 15; CONT is special nn + 14, ending in `0D 0A` (CR then LF). Reset the buffer and identity gate on reconnect.
 
 ## What is not a handshake or setting recipe
 
-Legacy unsolicited command `71` is connection-ready, not a status reply; it does not replace `52` identification or contain established charge/temperature fields. Manufacturer apps may perform extra reads or binding steps. The examples do not change identity, binding, firmware or battery settings.
+Legacy unsolicited command `71` is connection-ready, not a status reply; it does not replace `52` identification or contain established charge/temperature fields. Manufacturer apps may perform extra reads or binding steps. iVolt CONT likewise is control, not a measurement or firmware identity; only DAT groups can refresh their own measurement timestamps. GET1 is a privacy-sensitive password/settings read, not a measurement request; omit its raw reply from logging/export. The examples do not change identity, binding, firmware or battery settings.
 
 Known configuration layouts are documented separately in [BlackVue settings](../docs/blackvue-legacy.md#configuration-commands) and [Neo+ configuration](../docs/cellink-neo-plus.md#configuration-protocol). Those source-derived writes have different model/firmware limits from the hardware-observed telemetry. Read supported/locked masks where specified; a shared status format does not make a setting command compatible. BP100 additional command identifiers have incomplete payload/acknowledgement specifications, and Cellink Neo-specific configuration remains unknown. Do not turn a known command number into a guessed empty write.
 

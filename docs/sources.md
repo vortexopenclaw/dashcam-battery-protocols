@@ -42,4 +42,14 @@ Targeted offline analysis used Android2.2.03, base APK SHA256 `6b0ec5a846cbe88b8
 
 Battery transport, builders/parsers and session initialization establish C0 UUIDs, read-only GET41/01–04, XMODEM outgoing CRC and command-specific fields. The actual session's explicit incoming-CRC-disabled override corrects the earlier default-parser inference. Direct phone/Mac V39 responses independently corroborate the documented measurements. Unknown timeA/configured extension scaling/binding behavior is not silently promoted to hardware evidence. Public app/manual pages establish provenance and user-visible behavior, not an official wire specification.
 
+## Thinkware iVolt XTRA
+
+- [Official mobile-app compatibility guide](https://support.thinkware.com/hc/en-us/articles/360045289593-Which-Thinkware-Mobile-App-do-I-use), mapping iVolt Xtra to THINKWARE iVolt.
+- [Official BAB-95 installation and app guide](https://support.thinkware.com/hc/en-us/articles/16357652595859-How-to-Install-the-iVolt-Xtra-Battery-Pack).
+- [Official Play listing](https://play.google.com/store/apps/details?id=com.thinkware.ivolt), package `com.thinkware.ivolt`.
+
+Offline review used compatible native Android app **1.1.7**, version code **19**. Base APK SHA256: `c3e87c1380f8463aa4e68d3048b58bb3cc5f59fa0a65938c077ea71ed8191461`. The privately acquired artifact came from a third-party mirror, not direct Play delivery. Hash/signature checks corroborate the reviewed artifact, not an independently proven manufacturer delivery chain. No software or decompiled code is redistributed.
+
+Independently described facts come from the native GATT selection/notification/write paths, main receive and verification paths, DAT setters, settings GET parser and voltage/current/state/time presentation. They establish FFF1/FFF2, literal DATA/GET1, ASCII framing/checksum and the source-derived groups documented on the [iVolt page](ivolt-xtra.md). The native DAT branch is not universally checksum-gated, unlike the recommended strict client. Private hardware review corroborates GATT and checksum-valid CONT controls only, not DAT telemetry or firmware identity. Official guides describe product/app and user-facing behavior, not ATT command semantics. Public vectors are newly constructed from these facts; password/settings GET responses are intentionally excluded.
+
 This is an unofficial protocol reference. Public examples are synthetic; manufacturer software and private device captures are not redistributed.

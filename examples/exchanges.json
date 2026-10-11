@@ -3,6 +3,42 @@
   "note": "Independent charging/discharging illustrations, not a continuous captured session. TX requests are documented commands; RX values and unverified trailers are synthetic.",
   "sessions": [
     {
+      "profile": "ivolt-xtra",
+      "title": "Thinkware iVolt XTRA / BAB-95, firmware unknown",
+      "service": "0000fff0-0000-1000-8000-00805f9b34fb",
+      "writer": "0000fff2-0000-1000-8000-00805f9b34fb",
+      "response": "0000fff1-0000-1000-8000-00805f9b34fb",
+      "write_mode": "write without response",
+      "control": [
+        [
+          "ivolt_cont",
+          "ivolt_data"
+        ]
+      ],
+      "stream": {
+        "charging": [
+          "ivolt_charging_dat1",
+          "ivolt_charging_dat2",
+          "ivolt_charging_dat3"
+        ],
+        "discharging": [
+          "ivolt_discharge_dat1",
+          "ivolt_discharge_dat2",
+          "ivolt_discharge_dat3"
+        ],
+        "edge_cases": [
+          "ivolt_unsupported_dat3",
+          "ivolt_special_dat3",
+          "ivolt_negative_standby_dat2",
+          "ivolt_full_dat2",
+          "ivolt_special_input_dat2",
+          "ivolt_decimal_zero_dat3"
+        ]
+      },
+      "private_read_request": "ivolt_get1",
+      "notes": "CONT shape is hardware-observed; this control fixture is independently checksum-generated. DATA and GET1 literals and all DAT fields are native-app 1.1.7 source-derived. DAT telemetry is NOT physically accepted; firmware/model identity unknown. RX groups below illustrate a possible stream after the CONT-triggered DATA response, not one DATA poll per DAT frame or an established ACK sequence. Whether DATA alone suffices without GET1 is unverified. GET1 reads password/settings; no GET reply is included and raw GET/unknown traffic must be withheld before persistence."
+    },
+    {
       "profile": "b124",
       "title": "BlackVue B-124, firmware 1.44",
       "service": "0000fff0-0000-1000-8000-00805f9b34fb",
