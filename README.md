@@ -1,6 +1,6 @@
 # Dashcam Battery Bluetooth Protocols
 
-An open Bluetooth protocol reference for the BlackVue B-124 and B-130A, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, and Cellink Neo. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. UUIDs, connection sequences, commands, packet layouts, units and firmware differences are documented independently of any particular app.
+An open Bluetooth protocol reference for the BlackVue B-124, B-130A and B-130X, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, and Cellink Neo. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. UUIDs, connection sequences, commands, packet layouts, units and firmware differences are documented independently of any particular app.
 
 ## Battery coverage
 
@@ -8,12 +8,13 @@ An open Bluetooth protocol reference for the BlackVue B-124 and B-130A, Blackbox
 |---|---|---|---|
 | BlackVue B-124 | Hardware-observed telemetry, firmware 1.44 | `43 06`, big-endian | [B-124](docs/b124.md) |
 | BlackVue B-130A | Hardware-observed telemetry, firmware 1.61 | `43 06`, extended voltage fields | [B-130A](docs/b130a.md) |
+| BlackVue B-130X | Hardware-observed charging/discharging telemetry, firmware 1.61 | `43 06`, extended voltage fields | [B-130X](docs/b130x.md) |
 | BlackboxMyCar BI-750 | Hardware-observed telemetry, firmware 1.6 | `ITSC`, big-endian | [BI-750](docs/bi750.md) |
 | BlackboxMyCar PowerCell 8 | Hardware-observed telemetry, F141 | `@@`, little-endian, `FF12` status transport | [PowerCell 8](docs/powercell8.md) |
 | VIOFO BP100 | Hardware-observed telemetry, V39 | `AA 55 AA 55`, command-specific decimal fields | [BP100](docs/bp100.md) |
 | Cellink Neo | Hardware-observed telemetry, 1.52 | `43 06`, classic big-endian layout | [Cellink Neo](docs/cellink-neo6.md) |
 
-Coverage reviewed October 10, 2026. A related name, UUID or shared manufacturer does not establish protocol compatibility. B-124X, B-130X and Cellink Neo+ family references have separate evidence limits.
+Coverage reviewed October 11, 2026. A related name, UUID or shared manufacturer does not establish protocol compatibility. B-124X and Cellink Neo+ family references have separate evidence limits.
 
 ## Start here
 
@@ -23,7 +24,7 @@ Coverage reviewed October 10, 2026. A related name, UUID or shared manufacturer 
 - [Sources and attribution](docs/sources.md)
 - [Contributing](CONTRIBUTING.md)
 
-The six machine-readable coverage profiles live in [profiles/](profiles/). [Synthetic packet examples](examples/vectors.json) demonstrate offsets and units without private captures. Legacy/ITSC trailers and BP100 CRC fields are **unverified zero placeholders**; Neo+ family replies end in `0A 0D` (LF then CR) and use zeroed PIN/reserved fields. Do not transmit response fixtures to a battery.
+The seven machine-readable coverage profiles live in [profiles/](profiles/). [Synthetic packet examples](examples/vectors.json) demonstrate offsets and units without private captures. Legacy/ITSC trailers and BP100 CRC fields are **unverified zero placeholders**; Neo+ family replies end in `0A 0D` (LF then CR) and use zeroed PIN/reserved fields. Do not transmit response fixtures to a battery.
 
 ## Interpreting fields
 

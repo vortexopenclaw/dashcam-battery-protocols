@@ -7,9 +7,7 @@
   "tested_firmware": [
     "1.61"
   ],
-  "source_only_variants": [
-    "B-130X"
-  ],
+  "source_only_variants": [],
   "service_uuids": [
     "0000fff0-0000-1000-8000-00805f9b34fb"
   ],

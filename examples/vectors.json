@@ -164,6 +164,45 @@
       }
     },
     {
+      "id": "b130x_identity",
+      "protocol": "blackvue_legacy",
+      "kind": "identity",
+      "firmware_revision": 161,
+      "model": "B-130X",
+      "hex": "43 06 0C 52 00 A1 00 00 00 00 42 2D 31 33 30 58 00",
+      "expected": {"firmware": "1.61", "model": "B-130X"}
+    },
+    {
+      "id": "b130x_charging",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "firmware_revision": 161,
+      "model": "B-130X",
+      "hex": "43 06 18 51 B4 00 00 00 1E 7C 90 00 00 00 13 88 00 00 1D 4C 01 00 00 00 78 00 8C 00 00",
+      "expected": {
+        "charge_percent": 80, "temperature_c": 24,
+        "input_v": 12.0, "input_a": 5.0,
+        "output_v": 14.0, "output_a": 0.0,
+        "runtime_estimate_min": 0, "time_to_full_min": 30,
+        "reported_capacity_mah": 7500, "state_code": 1
+      }
+    },
+    {
+      "id": "b130x_discharge",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "firmware_revision": 161,
+      "model": "B-130X",
+      "hex": "43 06 18 51 96 01 2C 00 00 7D 88 00 00 00 00 00 01 F4 1D 4C 03 00 00 00 00 00 82 00 00",
+      "expected": {
+        "charge_percent": 50, "temperature_c": 25,
+        "input_v": 0.0, "input_a": 0.0,
+        "output_v": 13.0, "output_a": 0.5,
+        "runtime_estimate_min": 300, "time_to_full_min": 0,
+        "reported_capacity_mah": 7500, "state_code": 3
+      }
+    },
+    {
       "id": "bi750_vitals",
       "protocol": "itsc",
       "kind": "vitals",

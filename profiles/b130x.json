@@ -1,0 +1,16 @@
+{
+  "id": "b130x",
+  "manufacturer": "BlackVue",
+  "model": "B-130X",
+  "coverage": "hardware_telemetry",
+  "protocol": "blackvue_legacy_extended",
+  "tested_firmware": ["1.61"],
+  "source_only_variants": [],
+  "service_uuids": ["0000fff0-0000-1000-8000-00805f9b34fb"],
+  "reference": "docs/b130x.md",
+  "reviewed": "2026-10-11",
+  "evidence_page": "docs/methodology.md",
+  "incoming_checksum": "unverified",
+  "capacity_semantics": "configured_mah",
+  "charging_discharge_current": "may_report_zero_with_running_dashcam"
+}

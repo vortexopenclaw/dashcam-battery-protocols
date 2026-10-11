@@ -100,9 +100,9 @@ def decode_example(example, packet):
 
 
 def main():
-    models = {'b124', 'b130a', 'bi750', 'powercell8', 'bp100', 'cellink-neo6'}
+    models = {'b124', 'b130a', 'b130x', 'bi750', 'powercell8', 'bp100', 'cellink-neo6'}
     profiles = [json.loads(path.read_text()) for path in sorted((ROOT / 'profiles').glob('*.json'))]
-    require({profile['id'] for profile in profiles} == models, 'Six distinct model profiles required')
+    require({profile['id'] for profile in profiles} == models, 'Seven distinct model profiles required')
     for profile in profiles:
         require(profile['incoming_checksum'] == 'unverified', 'Checksum evidence must remain explicit')
         require(profile['capacity_semantics'] in ('configured_mah', 'configured_base_plus_expansion_mah',
@@ -159,7 +159,7 @@ def main():
     forbidden = [r'/Users/', r'/Volumes/', r'-----BEGIN [A-Z ]*PRIVATE KEY-----',
                  r'\b(?:ghp_|github_pat_|sk_live_)[A-Za-z0-9_]{12,}',
                  r'\b(?:[0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}\b',
-                 r'\b(?:B124|130A)[0-9A-F]{4,}\b', r'PWC8\s+[0-9A-F]{6}\b',
+                 r'\b(?:B124|130A|130X)[0-9A-F]{4,}\b', r'PWC8\s+[0-9A-F]{6}\b',
                  r'phone-capture-\d', r'vortex-battery-lab[^\s]*workers\.dev',
                  r'CN6-[0-9A-F]{4}\b', r'\b20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d']
     for path in files:

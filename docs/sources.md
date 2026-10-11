@@ -17,7 +17,7 @@ The upstream implementation supplies the ITSC transport and measurement map. Thi
 
 Analyzed app: BlackVue Android China **3.60**, version code **36000**, package `comb.blackvuec`. The reviewed APK's SHA-256 is `6f0c4fd87179132d65addf21ea05fd63f326838f3e6409ab90f143da43d3c221`. The download page may later serve a different version; match the artifact before reproducing this analysis.
 
-Targeted offline analysis of the battery activity, Bluetooth connection manager and battery-info view established request framing, firmware-aware offsets and estimate-display behavior. This repository publishes independently written protocol facts, not the APK or manufacturer application source. Hardware observations corroborate B-124 1.44 and B-130A 1.61. The public blog posts establish provenance/integration, not an official wire specification.
+Targeted offline analysis of the battery activity, Bluetooth connection manager and battery-info view established request framing, firmware-aware offsets and estimate-display behavior. This repository publishes independently written protocol facts, not the APK or manufacturer application source. Hardware observations corroborate B-1241.44, B-130A1.61 and B-130X1.61. The battery-info view also supplies the source-derived B-130X charging-mode output-display condition. The public blog posts establish provenance/integration, not an official wire specification.
 
 ## Cellink Neo+
 
