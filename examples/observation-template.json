@@ -1,0 +1,28 @@
+{
+  "synthetic": true,
+  "note": "Template only. Replace synthetic with false for a reviewed telemetry-only summary; do not include raw packets or identifiers.",
+  "manufacturer": null,
+  "model": null,
+  "firmware": null,
+  "evidence_level": "hardware_observed",
+  "gatt": [],
+  "observations": [
+    {
+      "elapsed_seconds": 0,
+      "activity": "unknown",
+      "charge_percent": null,
+      "temperature_c": null,
+      "input_v": null,
+      "input_a": null,
+      "output_v": null,
+      "output_a": null,
+      "raw_state_code": null
+    }
+  ],
+  "manufacturer_comparison": {
+    "approximate": true,
+    "notes": null
+  },
+  "source_url": null,
+  "privacy_reviewed": false
+}

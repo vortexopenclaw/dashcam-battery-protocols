@@ -1,0 +1,161 @@
+{
+  "synthetic": true,
+  "response_checksum": "unverified_zero_placeholder",
+  "note": "These invented responses illustrate fields; they are not captured measurements or packets to transmit.",
+  "requests": [
+    {
+      "id": "blackvue_identify",
+      "protocol": "blackvue_legacy",
+      "command": "52",
+      "hex": "43 06 00 52 17"
+    },
+    {
+      "id": "blackvue_status",
+      "protocol": "blackvue_legacy",
+      "command": "51",
+      "hex": "43 06 00 51 14"
+    },
+    {
+      "id": "bi750_identify",
+      "protocol": "itsc",
+      "command": "32",
+      "hex": "49 54 53 43 00 00 32 00"
+    },
+    {
+      "id": "bi750_vitals_request",
+      "protocol": "itsc",
+      "command": "33",
+      "hex": "49 54 53 43 00 00 33 00"
+    },
+    {
+      "id": "bi750_electrical_request",
+      "protocol": "itsc",
+      "command": "34",
+      "hex": "49 54 53 43 00 00 34 00"
+    },
+    {
+      "id": "bi750_time_capacity_request",
+      "protocol": "itsc",
+      "command": "35",
+      "hex": "49 54 53 43 00 00 35 00"
+    }
+  ],
+  "responses": [
+    {
+      "id": "b124_identity",
+      "protocol": "blackvue_legacy",
+      "kind": "identity",
+      "firmware_revision": 144,
+      "model": "B-124",
+      "hex": "43 06 0C 52 00 90 00 00 00 00 42 2D 31 32 34 00 00",
+      "expected": {
+        "firmware": "1.44",
+        "model": "B-124"
+      }
+    },
+    {
+      "id": "b124_charging",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "firmware_revision": 144,
+      "model": "B-124",
+      "hex": "43 06 12 51 B8 00 00 00 0E 80 8A 8A 8A 00 23 28 02 08 31 38 01 00 00",
+      "expected": {
+        "charge_percent": 84,
+        "temperature_c": 28,
+        "input_v": 13.8,
+        "input_a": 9,
+        "output_v": 13.8,
+        "output_a": 0.52,
+        "time_to_full_min": 14,
+        "reported_capacity_mah": 12600,
+        "state_code": 1
+      }
+    },
+    {
+      "id": "b124_discharge",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "firmware_revision": 144,
+      "model": "B-124",
+      "hex": "43 06 12 51 AF 04 37 00 00 81 84 00 84 00 00 00 02 08 31 38 03 00 00",
+      "expected": {
+        "charge_percent": 75,
+        "temperature_c": 29,
+        "input_v": 0,
+        "input_a": 0,
+        "output_v": 13.2,
+        "output_a": 0.52,
+        "runtime_estimate_min": 1079,
+        "state_code": 3
+      }
+    },
+    {
+      "id": "b130a_identity",
+      "protocol": "blackvue_legacy",
+      "kind": "identity",
+      "firmware_revision": 161,
+      "model": "B-130A",
+      "hex": "43 06 0C 52 00 A1 00 00 00 00 42 2D 31 33 30 41 00",
+      "expected": {
+        "firmware": "1.61",
+        "model": "B-130A"
+      }
+    },
+    {
+      "id": "b130a_discharge",
+      "protocol": "blackvue_legacy",
+      "kind": "status",
+      "firmware_revision": 161,
+      "model": "B-130A",
+      "hex": "43 06 18 51 9D 00 F3 00 00 80 83 00 00 00 00 00 04 06 1D 4C 03 00 00 00 00 00 81 00 00",
+      "expected": {
+        "charge_percent": 57,
+        "temperature_c": 28,
+        "input_v": 0,
+        "input_a": 0,
+        "output_v": 12.9,
+        "output_a": 1.03,
+        "runtime_estimate_min": 243,
+        "reported_capacity_mah": 7500,
+        "state_code": 3
+      }
+    },
+    {
+      "id": "bi750_vitals",
+      "protocol": "itsc",
+      "kind": "vitals",
+      "hex": "49 54 53 43 00 00 33 2B 2C 04 00 00 00 00 00 00",
+      "expected": {
+        "charge_percent": 43,
+        "temperature_c": 44,
+        "state_code": 4
+      }
+    },
+    {
+      "id": "bi750_electrical",
+      "protocol": "itsc",
+      "kind": "electrical",
+      "hex": "49 54 53 43 00 00 34 36 10 37 14 37 5A 00 00 00",
+      "expected": {
+        "input_v": 13.84,
+        "input_a": 14.1,
+        "input_w": 195.144,
+        "output_v": 14.17,
+        "output_a": 0,
+        "output_w": 0
+      }
+    },
+    {
+      "id": "bi750_time_capacity",
+      "protocol": "itsc",
+      "kind": "time_capacity",
+      "hex": "49 54 53 43 00 00 35 00 28 00 00 3A 98 00 00 00",
+      "expected": {
+        "time_to_full_min": 40,
+        "runtime_estimate_min": 0,
+        "reported_capacity_mah": 15000
+      }
+    }
+  ]
+}

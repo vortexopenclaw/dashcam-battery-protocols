@@ -1,0 +1,17 @@
+{
+  "id": "bp100",
+  "manufacturer": "VIOFO",
+  "model": "BP100",
+  "coverage": "no_hardware_capture",
+  "protocol": null,
+  "tested_firmware": [],
+  "source_only_variants": [],
+  "service_uuids": [],
+  "telemetry_status_samples": 0,
+  "initial_connection_while_charging": "unverified",
+  "reference": "docs/bp100.md",
+  "reviewed": "2026-10-10",
+  "evidence_page": "docs/methodology.md",
+  "incoming_checksum": "unverified",
+  "usable_capacity_measured": false
+}

@@ -1,0 +1,21 @@
+{
+  "id": "bi750",
+  "manufacturer": "BlackboxMyCar",
+  "model": "BI-750",
+  "coverage": "hardware_telemetry",
+  "protocol": "itsc",
+  "tested_firmware": [
+    "1.6"
+  ],
+  "source_only_variants": [],
+  "service_uuids": [
+    "49535343-fe7d-4ae5-8fa9-9fafd205e455"
+  ],
+  "telemetry_status_samples": 200,
+  "initial_connection_while_charging": "observed",
+  "reference": "docs/bi750.md",
+  "reviewed": "2026-10-10",
+  "evidence_page": "docs/methodology.md",
+  "incoming_checksum": "unverified",
+  "usable_capacity_measured": false
+}

@@ -1,0 +1,25 @@
+{
+  "id": "b124",
+  "manufacturer": "BlackVue",
+  "model": "B-124",
+  "coverage": "hardware_telemetry",
+  "protocol": "blackvue_legacy",
+  "tested_firmware": [
+    "1.44"
+  ],
+  "source_only_variants": [
+    "B-124X",
+    "revision <110",
+    "revision >=160 on B-124"
+  ],
+  "service_uuids": [
+    "0000fff0-0000-1000-8000-00805f9b34fb"
+  ],
+  "telemetry_status_samples": 487,
+  "initial_connection_while_charging": "observed",
+  "reference": "docs/b124.md",
+  "reviewed": "2026-10-10",
+  "evidence_page": "docs/methodology.md",
+  "incoming_checksum": "unverified",
+  "usable_capacity_measured": false
+}
