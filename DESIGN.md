@@ -9,3 +9,10 @@ The reference distinguishes scoped hardware telemetry evidence from source-deriv
 Rollback: correct an erroneous claim with a new commit that preserves history and explains the evidence. Never force-push or import private app/capture directories. The standalone repository contains only reviewed public documentation, profiles, synthetic examples and validation code.
 
 The audience is developers building custom apps/interfaces and maintaining batteries after manufacturer support ends. Document UUIDs, initialization, read/write commands, fields, units and firmware branches. Omit test readings, screenshot comparisons, sample counts and session narratives. Camera Bluetooth research and application planning belong in separate projects.
+
+HK6-F extension: add a separate hardwire-accessory broadcast reference without
+changing the eight battery profiles or claiming an app integration. Publish
+reviewed voltage offsets and synthetic placeholders, qualify firmware/family
+coverage, and keep raw identities, captures and private correspondence local.
+Success checks are the existing links/privacy/vector validator, a focused diff,
+GitHub CI and live-document equality. Rollback uses a corrective commit.

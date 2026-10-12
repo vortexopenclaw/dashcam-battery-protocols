@@ -19,6 +19,7 @@ Coverage reviewed October 11, 2026. A related name, UUID or shared manufacturer 
 
 ## Start here
 
+- [VIOFO HK6 / HK6-F hardwire Bluetooth broadcasts](docs/hk6.md): battery and ACC input-voltage fields observed on HK6-F; accessory reference, separate from battery-pack coverage.
 - [Example Bluetooth conversations: initialization, charging and discharging](examples/communication.md)
 - [Shared BlackVue legacy transport and field map](docs/blackvue-legacy.md)
 - [Cellink Neo+ family protocol](docs/cellink-neo-plus.md)
