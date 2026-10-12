@@ -61,14 +61,11 @@ checksum fixture and must not be transmitted:
 The battery field represents `13 + 50/100 = 13.50 V`; ACC represents `0.00 V`.
 Do not use this example to infer device identity or status-byte semantics.
 
-## Manufacturer-documented functionality
+## Manufacturer-documented Bluetooth functionality
 
 The [HK6-F product documentation](https://www.viofo.com/products/viofo-type-c-hk6-f-acc-hardwire-kit-for-t330-t340-support-parking-mode)
-describes pairing-free voltage broadcasts, voltage stamps on recordings,
-ACC-triggered driving/parking changes, physical low-voltage protection, and
-Hybrid Parking support for T330/T340. It specifies 12/24 V vehicle use and
-four physical cutoff options. These product features are not all Bluetooth
-fields or remotely writable settings.
+describes pairing-free voltage broadcasts and voltage stamps on recordings
+for T330/T340. These features do not establish remotely writable settings.
 
 The [HK6 app setup guide](https://www.viofo.com/blogs/viofo-car-dash-camera-guide-faq-and-news/bp100-hk6-dashcam-app-setup)
 describes enabling **Show Voltage Value** in the VIOFO app's Help tab. Within
@@ -76,26 +73,9 @@ Bluetooth range, voltage remains available without a camera Wi-Fi connection
 and even while the camera is off. Camera-off broadcast behavior is
 manufacturer-documented, not independently exercised here.
 
-VIOFO's [HK6 feature explanation](https://www.viofo.com/blogs/viofo-car-dash-camera-guide-faq-and-news/upgrade-to-hk6-hardwire-cable-smarter-parking-protection-total-peace-of-mind-1)
-distinguishes a camera's Hybrid Parking voltage threshold from the kit's
-physical low-voltage-protection switch. The camera can use the former to enter
-lower-power impact monitoring; the latter cuts camera power. It also describes
-automatic accessory discovery with a remembered address and coexistence with
-the Bluetooth remote through different protocols. Broadcast reception without
-pairing must not be confused with the camera's remembered accessory association.
-
 Battery-pack capacity belongs to a BP100/BP60 integration, not an HK6 voltage
 field. Mixed compatibility text on product pages does not establish identical
 protocols across accessories. Use model-specific manuals and firmware notes.
-
-## USB ACC signaling
-
-First-hand [HK4/A229 Plus electrical measurements](https://www.sinustrom.info/2024/07/20/viofo-dash-cam-usb-c-parking-signal/)
-report a static ACC signal on CC1/A5 or CC2/B5 depending on plug orientation,
-with camera power continuing on VBUS. This is an HK4 electrical reference,
-not an HK6-F waveform measurement. No USB data packet protocol was recovered
-by this Bluetooth work. Camera voltage reception and USB ACC signaling are
-separate mechanisms.
 
 ## Remaining protocol and acceptance gaps
 
@@ -105,10 +85,9 @@ separate mechanisms.
   advertising layout across host platforms.
 - Input-voltage accuracy, fractional-byte limits, 24 V operation, ACC
   thresholds/hysteresis and time from an input change to its broadcast.
-- Output-current/wattage, temperature, physical cutoff selection, output-power
-  status and fault/protection telemetry. None has been decoded; their presence
-  in the protocol is unknown.
-- Broadcast behavior during camera-off, hardware cutoff and power restoration;
+- Additional telemetry fields beyond input voltage and the observed status
+  byte. Their presence and meaning remain unknown.
+- Broadcast behavior during camera-off and accessory power restoration;
   association with multiple nearby kits and native-app selection behavior.
 - Any remote configuration, firmware-update or control protocol. No write
   commands are documented for this accessory. Do not reuse BP100 commands.

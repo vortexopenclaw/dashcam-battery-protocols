@@ -4,14 +4,12 @@
 
 - [Official HK6-F product documentation](https://www.viofo.com/products/viofo-type-c-hk6-f-acc-hardwire-kit-for-t330-t340-support-parking-mode).
 - [Official HK6/BP100 app setup guide](https://www.viofo.com/blogs/viofo-car-dash-camera-guide-faq-and-news/bp100-hk6-dashcam-app-setup).
-- [Official HK6 feature and protection explanation](https://www.viofo.com/blogs/viofo-car-dash-camera-guide-faq-and-news/upgrade-to-hk6-hardwire-cable-smarter-parking-protection-total-peace-of-mind-1).
-- [Zoltan Puskas's first-hand HK4 USB-C electrical investigation](https://www.sinustrom.info/2024/07/20/viofo-dash-cam-usb-c-parking-signal/); this does not independently establish an HK6-F pinout.
 
 Controlled passive observations on one HK6-F powering a T330W support the
 [manufacturer-data voltage map](hk6.md). Accessory firmware is unknown.
 Supply changes and a fixed-supply ACC round trip distinguish battery and ACC
-inputs. Unknown prefix/trailer bytes, private radio identities, captures and
-correspondence are not redistributed. The decoding illustration is synthetic.
+inputs. Unknown prefix/trailer bytes, private radio identities and captures
+are not redistributed. The decoding illustration is synthetic.
 Native-app agreement, calibration, wider-model compatibility and checksum
 semantics remain unverified. Product documentation establishes user-facing
 features, not undocumented Bluetooth commands.
