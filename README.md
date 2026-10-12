@@ -1,6 +1,6 @@
 # Dashcam Battery Bluetooth Protocols
 
-An open Bluetooth protocol reference for the BlackVue B-124, B-130A and B-130X, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, Cellink Neo, and Thinkware iVolt XTRA / BAB-95. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. Each battery reference documents its Bluetooth services, connection sequence, commands, packet layouts and telemetry conversions, with example exchanges for implementing your own client. Model-specific behavior, known configuration commands and remaining unknowns are documented on the individual reference pages.
+An open Bluetooth protocol reference for the BlackVue B-124, B-130A, and B-130X, BlackboxMyCar BI-750 and PowerCell 8, VIOFO BP100, Cellink Neo, and Thinkware iVolt XTRA / BAB-95. Use it to build your own dashcam-battery apps and interfaces and keep batteries usable after manufacturer app support ends. Each battery reference documents its Bluetooth services, connection sequence, commands, packet layouts and telemetry conversions, with example exchanges for implementing your own client. Model-specific behavior, known configuration commands and remaining unknowns are documented on the individual reference pages.
 
 ## Battery coverage
 
